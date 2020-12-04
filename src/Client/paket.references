@@ -6,4 +6,8 @@ Fable.Elmish.HMR
 Fable.FontAwesome.Free
 Fable.React
 Fable.Remoting.Client
+Fable.Promise
+Fable.Fetch
+Thoth.Json.Net
+Thoth.Json
 Fulma

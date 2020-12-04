@@ -3,7 +3,7 @@ module Server.Tests
 open Expecto
 
 open Shared
-open Server
+open Server.Program
 
 let server = testList "Server" [
     testCase "Adding valid Todo" <| fun _ ->

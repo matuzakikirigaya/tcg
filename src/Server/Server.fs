@@ -1,4 +1,4 @@
-module Server
+module Server.Program
 
 open Fable.Remoting.Server
 open Fable.Remoting.Giraffe
@@ -39,15 +39,12 @@ let webApp =
     |> Remoting.fromValue todosApi
     |> Remoting.buildHttpHandler
 
-let webApp2 = router {
-    get "" webApp
-}
-
 let app =
     application {
         url "http://0.0.0.0:8085"
-        use_router webApp2
+        use_router webApp
         memory_cache
+        use_jwt_authentication Jwt.secret Jwt.issuer
         use_static "public"
         use_gzip
     }

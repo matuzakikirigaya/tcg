@@ -6,6 +6,8 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="paket.references" />
+    <Compile Include="Jwt.fs" />
+    <Compile Include="Auth.fs" />
     <Compile Include="Server.fs" />
   </ItemGroup>
   <ItemGroup>

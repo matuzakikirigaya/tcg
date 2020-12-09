@@ -14,6 +14,9 @@ type LoginMsg =
     | LogInClicked
 
 let loginUpdate (msg: LoginMsg) (loginModel: LoginModel) = loginModel, Cmd.none
+
+let loginInit  userName = {UserName = userName; Password = ""}, Cmd.none
+
 open Fable.React
 open Fable.React.Props
 open Fulma

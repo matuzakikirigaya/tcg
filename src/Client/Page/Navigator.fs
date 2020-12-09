@@ -10,13 +10,13 @@ type NavigatorMsg = JumpToLogOut
 type NavigotorProps = { NavigatorDispatch: Unit -> Unit }
 
 let navigatorView =
-    elmishView "navigator" (fun { NavigatorDispatch = dispatch } ->
+    elmishView "navigator" <| fun { NavigatorDispatch = dispatch } ->
         div [] [
-            str "HOGE"
-            // button [ 
-            //            // Button.Disabled (Todo.isValid model.Input |> not)
-            //            //button.OnClick(fun _ -> dispatch ())
-            //             ] [
-            //     str "Add"
-            // ]
-        ])
+            yield str "HOGE"
+            yield button [
+                       // Button.Disabled (Todo.isValid model.Input |> not)
+                       //button.OnClick(fun _ -> dispatch ())
+                        ] [
+                str "Add"
+            ]
+        ]

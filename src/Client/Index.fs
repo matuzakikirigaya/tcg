@@ -60,7 +60,7 @@ open Client.Utils.ElmishView
 let view (model: Model) (dispatch: Msg -> unit) =
     let pageModel = model.PageModel
     div [] [
-        // navigatorView ({ NavigatorDispatch = fun () -> () })
+        navigatorView ({ NavigatorDispatch = fun () -> () })
         div [] [
             match pageModel with
             | TodoModel todoModel ->

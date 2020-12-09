@@ -64,7 +64,7 @@ let webApp2 = router {
 let app =
     application {
         url "http://0.0.0.0:8085"
-        use_router webApp
+        use_router webApp2
         memory_cache
         use_jwt_authentication Jwt.secret Jwt.issuer
         use_static "public"

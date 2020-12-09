@@ -18,6 +18,17 @@ type Storage () =
             Ok ()
         else Error "Invalid todo"
 
+type LoginStorage () =
+    let testUserName = "testuser"
+    let testUserPassword = "testPassword"
+    let mutable isLoggingIn = false
+    member this.loggingIn (login:Login) = if login.userName = testUserName && login.password = testUserPassword
+                                                    then isLoggingIn <- true
+                                                         true
+                                                    else false
+
+let loginStorage = LoginStorage ()
+
 let storage = Storage()
 
 storage.AddTodo(Todo.create "Create new SAFE project") |> ignore
@@ -33,11 +44,22 @@ let todosApi =
             | Error e -> return failwith e
         } }
 
-let webApp =
+let loginApi =
+    {
+        createUser = fun () -> async { return true }
+        loggingIn = fun Login -> async { return loginStorage.loggingIn Login }
+    }
+
+let webApp page =
     Remoting.createApi()
     |> Remoting.withRouteBuilder Route.builder
-    |> Remoting.fromValue todosApi
+    |> Remoting.fromValue page
     |> Remoting.buildHttpHandler
+
+let webApp2 = router {
+    forward "" (webApp todosApi)
+    get "/login" (webApp loginApi)
+}
 
 let app =
     application {

@@ -23,7 +23,7 @@ type Model =
 
 
 type Msg =
-    | TodoMsg of TodoMsg
+    | TodoMsg of ITodoMsg
     | LoginMsg of LoginMsg
     | NavigatorMsg of NavigatorMsg
 
@@ -33,7 +33,7 @@ let init (): Model * Cmd<Msg> =
     let loginModel = { UserName = userName; Password = "" }
 
     let cmd =
-        Cmd.OfAsync.perform todosApi.getTodos () (TodoMsg << GotTodos)
+        Cmd.OfAsync.perform todosApi.getTodos () (TodoMsg << (fun x -> (GotTodo x) :> ITodoMsg))
 
     let menuModel = { UserName = userName }
     ({ MenuModel = menuModel

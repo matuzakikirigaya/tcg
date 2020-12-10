@@ -7,16 +7,16 @@ open Fable.React
 
 type NavigatorMsg = JumpToLogOut
 
-type NavigotorProps = { NavigatorDispatch: Unit -> Unit }
+type NavigotorProps =
+    { NavigatorDispatch: NavigatorMsg -> Unit }
+
+open Fable.React.Props
 
 let navigatorView =
-    elmishView "navigator" <| fun { NavigatorDispatch = dispatch } ->
+    fun { NavigatorDispatch = dispatch } ->
         div [] [
-            yield str "HOGE"
-            yield button [
-                       // Button.Disabled (Todo.isValid model.Input |> not)
-                       //button.OnClick(fun _ -> dispatch ())
-                        ] [
-                str "Add"
-            ]
+            yield
+                button [ OnClick (fun _ -> dispatch JumpToLogOut) ] [
+                    str "Add"
+                ]
         ]

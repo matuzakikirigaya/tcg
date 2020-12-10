@@ -4,6 +4,7 @@ open Shared
 open Elmish
 open Fable.Remoting.Client
 open Fulma
+open Client.Utils.ElmishView
 
 type TodoModel =
     { Todos: Todo list
@@ -35,26 +36,27 @@ let todoUpdate (msg: TodoMsg) (todoModel: TodoModel): TodoModel * Cmd<TodoMsg> =
 open Fable.React
 open Fable.React.Props
 
+type TodoProps = {TodoModel: TodoModel; TodoDispatch: TodoMsg -> Unit }
 
-let containerBox (model : TodoModel) (dispatch : TodoMsg -> unit) =
+let containerBox {TodoModel = todoModel; TodoDispatch = todoDispatch} =
     div [ ] [
         div [ ] [
             ol [ ] [
-                for todo in model.Todos do
+                for todo in todoModel.Todos do
                     li [ ] [ str todo.Description ]
             ]
         ]
         div [] [
             div [ ] [
                 input [
-                  Value model.Input
+                  Value todoModel.Input
                   Placeholder "What needs to be done?"
-                  OnChange (fun x -> SetInput x.Value |> dispatch) ]
+                  OnChange (fun x -> SetInput x.Value |> todoDispatch) ]
             ]
             div [ ] [
                 button[
-                    Disabled (Todo.isValid model.Input |> not)
-                    OnClick (fun _ -> dispatch AddTodo)
+                    Disabled (Todo.isValid todoModel.Input |> not)
+                    OnClick (fun _ -> todoDispatch AddTodo)
                 ] [
                     str "Add"
                 ]
@@ -62,17 +64,14 @@ let containerBox (model : TodoModel) (dispatch : TodoMsg -> unit) =
         ]
     ]
 
-type TodoProps = {TodoModel: TodoModel; TodoDispatch: TodoMsg -> Unit }
 
-open Client.Utils.ElmishView
 
-let todoView  = elmishView "todo" ( fun {TodoModel = todoModel; TodoDispatch = todoDispatch} ->
+let todoView  todoProps =
         div [ ] [
             div [ ] [
                 div [
                 ] [
-                    containerBox todoModel todoDispatch
+                    yield containerBox todoProps
                 ]
             ]
         ]
-)

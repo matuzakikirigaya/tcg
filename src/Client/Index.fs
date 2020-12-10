@@ -10,13 +10,17 @@ open Shared
 
 type MenuModel = { UserName: string }
 
-type PageModel =
-    | TodoModel of TodoModel
-    | LoginModel of LoginModel
+type CurrentPage =
+    | TodoPage
+    | LoginPage
 
 type Model =
     { MenuModel: MenuModel
-      PageModel: PageModel }
+      TodoModel: TodoModel
+      LoginModel: LoginModel
+      CurrentPage: CurrentPage }
+
+
 
 type Msg =
     | TodoMsg of TodoMsg
@@ -24,52 +28,54 @@ type Msg =
     | NavigatorMsg of NavigatorMsg
 
 let init (): Model * Cmd<Msg> =
-    let model = { Todos = []; Input = "" }
+    let todoModel = { Todos = []; Input = "" }
+    let userName = "hogekun"
+    let loginModel = { UserName = userName; Password = "" }
 
     let cmd =
         Cmd.OfAsync.perform todosApi.getTodos () (TodoMsg << GotTodos)
 
-    let pageModel = TodoModel model
-    let menuModel = { UserName = "hogekun" }
+    let menuModel = { UserName = userName }
     ({ MenuModel = menuModel
-       PageModel = pageModel }),
+       TodoModel = todoModel
+       LoginModel = loginModel
+       CurrentPage = TodoPage }),
     cmd
 
 let update (msg: Msg) (model1: Model): Model * Cmd<Msg> =
     match msg, model1 with
-    | TodoMsg todomsg, { PageModel = TodoModel todomodel } ->
+    | TodoMsg todomsg, { CurrentPage = TodoPage; TodoModel = todomodel } ->
         let (model, cmd) = (todoUpdate todomsg todomodel)
+        ({ model1 with TodoModel = model }, Cmd.map TodoMsg cmd)
+    | LoginMsg loginmsg, { CurrentPage = LoginPage; LoginModel = loginModel } ->
+        let (model, cmd) = (loginUpdate loginmsg loginModel)
         ({ model1 with
-               PageModel = TodoModel model },
-         Cmd.map TodoMsg cmd)
-    | LoginMsg loginmsg, { PageModel = LoginModel loginmodel } ->
-        let (model, cmd) = (loginUpdate loginmsg loginmodel)
-        ({ model1 with
-               PageModel = LoginModel model },
+               CurrentPage = LoginPage
+               LoginModel = model },
          Cmd.map LoginMsg cmd)
-    | NavigatorMsg navigatorMsg, model ->
+    | NavigatorMsg _, model ->
         let (kaihengo, cmd) = loginInit model.MenuModel.UserName
-        ({ model with
-               PageModel = LoginModel kaihengo },
-         cmd)
+        ({ model with CurrentPage = LoginPage }, cmd)
     | _, model -> (model, Cmd.none)
 
 open Fable.React
-open Client.Utils.ElmishView
 
 let view (model: Model) (dispatch: Msg -> unit) =
-    let pageModel = model.PageModel
+    let CurrentPage = model.CurrentPage
     div [] [
-        navigatorView ({ NavigatorDispatch = fun () -> () })
+        navigatorView ({ NavigatorDispatch = (dispatch << NavigatorMsg) })
+        hr []
         div [] [
-            match pageModel with
-            | TodoModel todoModel ->
-                    yield todoView
-                        { TodoModel = todoModel
+            match CurrentPage with
+            | TodoPage ->
+                yield
+                    todoView
+                        { TodoModel = model.TodoModel
                           TodoDispatch = (dispatch << TodoMsg) }
-            | LoginModel loginModel ->
-                    yield loginView
-                        { loginModel = loginModel
+            | LoginPage ->
+                yield
+                    loginView
+                        { loginModel = model.LoginModel
                           loginDispatch = (dispatch << LoginMsg) }
         ]
     ]

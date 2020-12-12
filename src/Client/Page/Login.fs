@@ -14,60 +14,48 @@ type LoginModel =
 
 type LoginMsg = IMsg<LoginModel>
 
-type StorageFailure(exn) =
-    class
-        interface LoginMsg with
-            member _.Update loginModel =
-                printfn "failure:%A" exn
-                loginModel, Cmd.none
-    end
+let StorageFailure (exn) =
+    { new LoginMsg with
+        member this.Update loginModel =
+            printfn "failure:%A" exn
+            loginModel, Cmd.none }
 
-type LoggedIn(userData: UserData) =
-    class
-        interface LoginMsg with
-            member _.Update loginModel =
-                { loginModel with
-                      UserData = Some userData },
-                Cmd.none
-    end
+let LoggedIn (userData: UserData) =
+    { new LoginMsg with
+        member this.Update loginModel =
+            { loginModel with
+                  UserData = Some userData },
+            Cmd.none }
 
-type LoginSuccess(userData: UserData) =
-    class
-        interface LoginMsg with
-            member _.Update loginModel =
-                loginModel,
-                Cmd.OfFunc.either (LocalStorage.save "user") userData (fun _ -> LoggedIn userData :> IMsg<LoginModel>) (fun x ->
-                    StorageFailure x :> IMsg<LoginModel>)
-    end
+let LoginSuccess (userData: UserData) =
+    { new LoginMsg with
+        member _.Update loginModel =
+            loginModel,
+            Cmd.OfFunc.either (LocalStorage.save "user") userData (fun _ -> LoggedIn userData :> IMsg<LoginModel>) (fun x ->
+                StorageFailure x :> IMsg<LoginModel>) }
 
-type SetUserName(userName: string) =
-    class
-        interface LoginMsg with
-            member _.Update loginModel =
-                { loginModel with
-                      login =
-                          { loginModel.login with
-                                userName = userName } },
-                Cmd.none
-    end
+let SetUserName (userName: string) =
+    { new LoginMsg with
+        member _.Update loginModel =
+            { loginModel with
+                  login =
+                      { loginModel.login with
+                            userName = userName } },
+            Cmd.none }
 
-type SetPassword(password: string) =
-    class
-        interface LoginMsg with
-            member _.Update loginModel =
-                { loginModel with
-                      login =
-                          { loginModel.login with
-                                password = password } },
-                Cmd.none
-    end
+let SetPassword (password: string) =
+    { new LoginMsg with
+        member _.Update loginModel =
+            { loginModel with
+                  login =
+                      { loginModel.login with
+                            password = password } },
+            Cmd.none }
 
-type AuthError(err: exn) =
-    class
-        interface LoginMsg with
-            member _.Update loginModel =
-                { loginModel with ErrorMsg = Some err }, Cmd.none
-    end
+let AuthError (err: exn) =
+    { new LoginMsg with
+        member _.Update loginModel =
+            { loginModel with ErrorMsg = Some err }, Cmd.none }
 
 open System
 open Thoth.Json
@@ -94,18 +82,14 @@ let authUser (login: Login) =
                 let! res = Fetch.fetch "/api/users/login/" props
                 let! txt = res.text ()
                 return Decode.Auto.unsafeFromString<UserData> txt
-            // return {UserName = txt; Token = txt}
-            // return Decode.Auto.unsafeFromString<UserData> "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmYXNkZnNkIiwianRpIjoiNjFjN2M3OTctNzhiYy00YzlhLTgwM2MtYjBmMzI5YjIxMGQ2IiwibmJmIjoxNjA3Nzk4NDUxLCJleHAiOjE2MDc4MDIwNTEsImlzcyI6InNhZmVib29rc3RvcmUuaW8iLCJhdWQiOiJzYWZlYm9va3N0b3JlLmlvIn0.4pMuJPbq4yP7Naot7r3Q6kASFWsce2g_9qFFRZue4Gc"
             with _ -> return! failwithf "Could not authenticate user."
     }
 
-type LoginClicked() =
-    class
-        interface LoginMsg with
-            member _.Update loginModel =
-                { loginModel with IsRunning = true },
-                Cmd.OfPromise.perform authUser loginModel.login (fun x -> LoginSuccess(x) :> LoginMsg) //(fun x -> AuthError(x) :> LoginMsg)
-    end
+let LoginClicked () =
+    { new LoginMsg with
+        member _.Update loginModel =
+            { loginModel with IsRunning = true },
+            Cmd.OfPromise.perform authUser loginModel.login (fun x -> LoginSuccess(x)) } //(fun x -> AuthError(x) :> LoginMsg)
 
 
 open Fable.React
@@ -125,7 +109,7 @@ let loginView { loginModel = model; loginDispatch = dispatch } =
         input [ HTMLAttr.Placeholder "passwords"
                 HTMLAttr.Type "password"
                 OnChange(fun ev -> dispatch (SetPassword ev.Value)) ]
-        button [ OnClick(fun _ -> dispatch (LoginClicked() :> LoginMsg)) ] [
+        button [ OnClick(fun _ -> dispatch (LoginClicked())) ] [
             str "submit"
         ]
         div [] [

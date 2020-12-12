@@ -14,13 +14,30 @@ type LoginModel =
 
 type LoginMsg = IMsg<LoginModel>
 
-type LoginSuccess(userData: UserData) =
+type StorageFailure(exn) =
+    class
+        interface LoginMsg with
+            member _.Update loginModel =
+                printfn "failure:%A" exn
+                loginModel, Cmd.none
+    end
+
+type LoggedIn(userData: UserData) =
     class
         interface LoginMsg with
             member _.Update loginModel =
                 { loginModel with
                       UserData = Some userData },
                 Cmd.none
+    end
+
+type LoginSuccess(userData: UserData) =
+    class
+        interface LoginMsg with
+            member _.Update loginModel =
+                loginModel,
+                Cmd.OfFunc.either (LocalStorage.save "user") userData (fun _ -> LoggedIn userData :> IMsg<LoginModel>) (fun x ->
+                    StorageFailure x :> IMsg<LoginModel>)
     end
 
 type SetUserName(userName: string) =
@@ -77,8 +94,8 @@ let authUser (login: Login) =
                 let! res = Fetch.fetch "/api/users/login/" props
                 let! txt = res.text ()
                 return Decode.Auto.unsafeFromString<UserData> txt
-                // return {UserName = txt; Token = txt}
-                // return Decode.Auto.unsafeFromString<UserData> "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmYXNkZnNkIiwianRpIjoiNjFjN2M3OTctNzhiYy00YzlhLTgwM2MtYjBmMzI5YjIxMGQ2IiwibmJmIjoxNjA3Nzk4NDUxLCJleHAiOjE2MDc4MDIwNTEsImlzcyI6InNhZmVib29rc3RvcmUuaW8iLCJhdWQiOiJzYWZlYm9va3N0b3JlLmlvIn0.4pMuJPbq4yP7Naot7r3Q6kASFWsce2g_9qFFRZue4Gc"
+            // return {UserName = txt; Token = txt}
+            // return Decode.Auto.unsafeFromString<UserData> "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmYXNkZnNkIiwianRpIjoiNjFjN2M3OTctNzhiYy00YzlhLTgwM2MtYjBmMzI5YjIxMGQ2IiwibmJmIjoxNjA3Nzk4NDUxLCJleHAiOjE2MDc4MDIwNTEsImlzcyI6InNhZmVib29rc3RvcmUuaW8iLCJhdWQiOiJzYWZlYm9va3N0b3JlLmlvIn0.4pMuJPbq4yP7Naot7r3Q6kASFWsce2g_9qFFRZue4Gc"
             with _ -> return! failwithf "Could not authenticate user."
     }
 

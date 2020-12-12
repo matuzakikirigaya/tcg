@@ -1,23 +1,22 @@
-<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
-        <DefineConstants>FABLE_COMPILER</DefineConstants>
-    </PropertyGroup>
-    <ItemGroup>
-        <None Include="index.html" />
-        <None Include="paket.references" />
-        <Compile Include="Util/ElmishView.fs" />
-        <Compile Include="Util/Msg.fs" />
-        <Compile Include="Page/Navigator.fs" />
-        <Compile Include="Page/Todo.fs" />
-        <Compile Include="Page/Login.fs" />
-        <Compile Include="IndexMM.fs" />
-        <Compile Include="Index.fs" />
-        <Compile Include="App.fs" />
-    </ItemGroup>
-    <ItemGroup>
-        <ProjectReference Include="..\Shared\Shared.fsproj" />
-    </ItemGroup>
-    <Import Project="..\..\.paket\Paket.Restore.targets" />
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\Shared.fsproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="index.html" />
+    <None Include="paket.references" />
+    <Compile Include="Util/ElmishView.fs" />
+    <Compile Include="Util/Msg.fs" />
+    <Compile Include="Util/LocalStorage.fs" />
+    <Compile Include="Page/Navigator.fs" />
+    <Compile Include="Page/Todo.fs" />
+    <Compile Include="Page/Login.fs" />
+    <Compile Include="IndexMM.fs" />
+    <Compile Include="Index.fs" />
+    <Compile Include="App.fs" />
+  </ItemGroup>
+  <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

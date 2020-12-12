@@ -8,6 +8,10 @@ open Pages.Navigator
 open Shared
 open Index.MM
 
+open Shared.Model.Login
+open Thoth.Json
+open LocalStorage
+
 open Client.Utils.Msg
 open System
 
@@ -15,9 +19,16 @@ open System
 let init (): Model * Cmd<Msg> =
     let todoModel = { Todos = []; Input = "" }
 
+    let loadUser () : UserData option =
+        let userDecoder = Decode.Auto.generateDecoder<UserData>()
+        match LocalStorage.load userDecoder "user" with
+        | Ok user -> Some user
+        | Error _ -> None
+    let user = loadUser () ;
+    let userName = match user with Some u -> u.userName  | _ -> "guesty"
     let loginModel =
         { login =
-              { userName = ""
+              { userName = userName
                 password = ""
                 passwordId = Guid.NewGuid() }
           ErrorMsg = None
@@ -33,7 +44,7 @@ let init (): Model * Cmd<Msg> =
 
     let navigatorModel: NavigatorModel =
         { CurrentPage = TodoPage
-          User = "guest" }
+          User = userName }
 
     ({ NavigatorModel = navigatorModel
        TodoModel = todoModel

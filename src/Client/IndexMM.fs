@@ -42,9 +42,18 @@ type SiLoginMsg(loginMsg: LoginMsg) =
 
                 let siCmd =
                     Cmd.map (fun loginmsg -> SiLoginMsg(loginmsg) :> Msg) soCmd
-                let user = match soModel.UserData with Some u -> u.userName | _ -> model.NavigatorModel.User
 
-                { model with LoginModel = soModel; NavigatorModel = {model.NavigatorModel with User = user } }, siCmd
+                let user =
+                    match soModel.UserData with
+                    | Some u -> u.userName
+                    | _ -> model.NavigatorModel.User
+
+                { model with
+                      LoginModel = soModel
+                      NavigatorModel =
+                          { model.NavigatorModel with
+                                User = user } },
+                siCmd
     end
 
 type SiNavigatorMsg(navigatorMsg: INavigatorMsg) =

@@ -9,12 +9,20 @@ open Shared
 open Index.MM
 
 open Client.Utils.Msg
+open System
 
 
 let init (): Model * Cmd<Msg> =
     let todoModel = { Todos = []; Input = "" }
-    let userName = "hogekun"
-    let loginModel = { UserName = userName; Password = "" }
+
+    let loginModel =
+        { login =
+              { userName = ""
+                password = ""
+                passwordId = Guid.NewGuid() }
+          ErrorMsg = None
+          IsRunning = false
+          UserData = None }
 
     let msgFactory = MsgFactory()
 
@@ -25,7 +33,7 @@ let init (): Model * Cmd<Msg> =
 
     let navigatorModel: NavigatorModel =
         { CurrentPage = TodoPage
-          User = { UserName = "guest" } }
+          User = "guest" }
 
     ({ NavigatorModel = navigatorModel
        TodoModel = todoModel

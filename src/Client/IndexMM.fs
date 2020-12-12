@@ -28,7 +28,8 @@ type SiTodoMsg(todoMsg: ITodoMsg) =
                 let siCmd =
                     Cmd.map (fun todomsg -> SiTodoMsg(todomsg) :> Msg) soCmd
 
-                { model with TodoModel = soModel }, siCmd
+
+                { model with TodoModel = soModel}, siCmd
     end
 
 type SiLoginMsg(loginMsg: LoginMsg) =

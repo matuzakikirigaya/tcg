@@ -59,6 +59,7 @@ let webApp page =
 let webApp2 = router {
     forward "" (webApp todosApi)
     get "/login" (webApp loginApi)
+    post "/api/users/login/" Auth.login
 }
 
 let app =

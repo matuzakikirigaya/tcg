@@ -13,7 +13,7 @@ type CurrentPage =
 
 type NavigatorModel =
     { CurrentPage: CurrentPage
-      User: User }
+      User: string }
 
 type INavigatorMsg = IMsg<NavigatorModel>
 
@@ -57,6 +57,6 @@ let navigatorView =
                 str "Login"
             ]
             div [] [
-                str navigatorModel.User.UserName
+                str navigatorModel.User
             ]
         ]

@@ -12,6 +12,6 @@ type LoginModel =
 
 type UserData =
     {
-      UserName: string
-      Token:Jwt
+      userName: string
+      token:Jwt
     }

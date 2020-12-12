@@ -11,9 +11,9 @@ open Elmish.HMR
 Program.mkProgram Index.Program.init Index.Program.update Index.Program.view
 #if DEBUG
 |> Program.withConsoleTrace
+|> Program.withDebugger
 #endif
 |> Program.withReactSynchronous "elmish-app"
 #if DEBUG
-|> Program.withDebugger
 #endif
 |> Program.run

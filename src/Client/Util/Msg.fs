@@ -2,7 +2,7 @@ module Client.Utils.Msg
 
 open Elmish
 
-type IMsg<'T> =
+type IMsg<'Model> =
     interface
-        abstract Update: 'T -> 'T * Cmd<IMsg<'T>>
+        abstract Update: 'Model -> 'Model * Cmd<IMsg<'Model>>
     end

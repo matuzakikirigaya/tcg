@@ -8,7 +8,7 @@ open System
 open System.Security.Claims
 open System.IdentityModel.Tokens.Jwt
 
-let makeJwt (userName:string) = userName
+let makeJwt (UserName:string) = UserName
 
 let private createPassPhrase() =
     let crypto = System.Security.Cryptography.RandomNumberGenerator.Create()

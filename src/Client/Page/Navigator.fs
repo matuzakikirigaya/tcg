@@ -3,6 +3,7 @@ module Pages.Navigator
 open Client.Utils.ElmishView
 open Client.Utils.Msg
 open Elmish
+open Shared
 
 open Fable.React
 
@@ -10,7 +11,7 @@ type CurrentPage =
     | LoginPage
     | TodoPage
 
-type NavigatorModel = { CurrentPage: CurrentPage }
+type NavigatorModel = { CurrentPage: CurrentPage ; User:User}
 type INavigatorMsg = IMsg<NavigatorModel>
 
 type JumpToLogIn() =

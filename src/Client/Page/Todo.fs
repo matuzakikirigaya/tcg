@@ -9,7 +9,6 @@ open Client.Utils.Msg
 
 type TodoModel = { Todos: Todo list; Input: string }
 
-
 type ITodoMsg = IMsg<TodoModel>
 
 type private GotTodo(todos: list<Todo>) =

@@ -2,16 +2,13 @@ module Pages.Login
 
 open Shared
 open Elmish
+open Client.Utils.Msg
 
 
 type LoginModel = { UserName: string; Password: string }
 
-type LoginMsg =
-    | LoginSuccess of string
-    | SetUserName of string
-    | SetPassword of string
-    | AuthError of exn
-    | LogInClicked
+type LoginMsg = IMsg<LoginModel>
+
 
 let loginUpdate (msg: LoginMsg) (loginModel: LoginModel) = loginModel, Cmd.none
 

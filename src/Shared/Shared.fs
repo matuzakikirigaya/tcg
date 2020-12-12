@@ -2,6 +2,9 @@ namespace Shared
 
 open System
 
+
+type User = {UserName:string}
+
 type Todo =
     { Id : Guid
       Description : string }

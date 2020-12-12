@@ -37,10 +37,8 @@ let init (): Model * Cmd<Msg> =
 
     let msgFactory = MsgFactory()
 
-    let imsgfactory = ITodoMsgFactory()
-
     let cmd =
-        Cmd.OfAsync.perform todosApi.getTodos () (msgFactory.SiTodoMsg << imsgfactory.GotTodo)
+        Cmd.OfAsync.perform todosApi.getTodos () (msgFactory.SiTodoMsg << GotTodo)
 
     let navigatorModel: NavigatorModel =
         { CurrentPage = TodoPage

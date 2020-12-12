@@ -11,61 +11,38 @@ type TodoModel = { Todos: Todo list; Input: string }
 
 type ITodoMsg = IMsg<TodoModel>
 
-type private GotTodo(todos: list<Todo>) =
-    class
-        let todos = todos
+let GotTodo (todos: list<Todo>) =
+    { new ITodoMsg with
+        member this.Update todoModel =
+            { todoModel with Todos = todos }, Cmd.none }
 
-        interface ITodoMsg with
-            member this.Update todoModel =
-                { todoModel with Todos = todos }, Cmd.none
-    end
+let SetInput (setInput) =
+    { new ITodoMsg with
+        member this.Update todoModel =
+            { todoModel with Input = setInput }, Cmd.none }
 
-type private SetInput(setInput) =
-    class
-        let setInput = setInput
+let AddedTodo (todo) =
+    { new ITodoMsg with
+        member this.Update todoModel =
+            { todoModel with
+                  Todos = todoModel.Todos @ [ todo ] },
+            Cmd.none }
 
-        interface ITodoMsg with
-            member this.Update todoModel =
-                { todoModel with Input = setInput }, Cmd.none
-    end
-
-type private AddedTodo(todo) =
-    class
-        let todo = todo
-
-        interface ITodoMsg with
-            member this.Update todoModel =
-                let model =
-                    { todoModel with
-                          Todos = todoModel.Todos @ [ todo ] }
-
-                model, Cmd.none
-    end
 
 let todosApi =
     Remoting.createApi ()
     |> Remoting.withRouteBuilder Route.builder
     |> Remoting.buildProxy<ITodosApi>
 
-type private AddTodo() =
-    class
-        interface ITodoMsg with
-            member this.Update todoModel =
-                let todo = Todo.create todoModel.Input
+let AddTodo () =
+    { new ITodoMsg with
+        member this.Update todoModel =
+            let todo = Todo.create todoModel.Input
 
-                let cmd =
-                    Cmd.OfAsync.perform todosApi.addTodo todo (fun todo -> (new AddedTodo(todo)) :> ITodoMsg)
+            let cmd: Cmd<ITodoMsg> =
+                Cmd.OfAsync.perform todosApi.addTodo todo (fun todo -> AddedTodo(todo))
 
-                { todoModel with Input = "" }, cmd
-    end
-
-type ITodoMsgFactory() =
-    class
-        member _.AddTodo() = (AddTodo()) :> ITodoMsg
-        member _.AddedTodo(todo) = (AddedTodo(todo)) :> ITodoMsg
-        member _.SetInput(setInput) = (SetInput(setInput)) :> ITodoMsg
-        member _.GotTodo(todos: list<Todo>) = (GotTodo(todos: list<Todo>)) :> ITodoMsg
-    end
+            { todoModel with Input = "" }, cmd }
 
 let todoUpdate (msg: ITodoMsg) (todoModel: TodoModel): TodoModel * Cmd<ITodoMsg> = msg.Update todoModel
 open Fable.React

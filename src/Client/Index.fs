@@ -16,7 +16,7 @@ let init (): Model * Cmd<Msg> =
     let userName = "hogekun"
     let loginModel = { UserName = userName; Password = "" }
 
-    let msgFactory =MsgFactory()
+    let msgFactory = MsgFactory()
 
     let imsgfactory = ITodoMsgFactory()
 
@@ -33,15 +33,16 @@ let init (): Model * Cmd<Msg> =
        CurrentPage = TodoPage }),
     cmd
 
-let update (msg: Msg) (model1: Model): Model * Cmd<Msg> =
-    msg.Update model1
+let update (msg: Msg) (model1: Model): Model * Cmd<Msg> = msg.Update model1
 open Fable.React
 
 let view (model: Model) (dispatch: Msg -> unit) =
     let CurrentPage = model.CurrentPage
     let msgFactory = MsgFactory()
     div [] [
-        navigatorView ({ NavigatorDispatch = (dispatch << msgFactory.SiNavigatorMsg) })
+        navigatorView
+            ({ NavigatorModel = model.NavigatorModel
+               NavigatorDispatch = (dispatch << msgFactory.SiNavigatorMsg) })
         hr []
         div [] [
             match CurrentPage with

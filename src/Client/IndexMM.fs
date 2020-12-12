@@ -24,30 +24,42 @@ type SiTodoMsg(todoMsg: ITodoMsg) =
         interface Msg with
             member this.Update model =
                 let soModel, soCmd = todoMsg.Update model.TodoModel
-                let siCmd = Cmd.map (fun todomsg -> SiTodoMsg(todomsg):> Msg) soCmd
-                {model with TodoModel = soModel}, siCmd
+
+                let siCmd =
+                    Cmd.map (fun todomsg -> SiTodoMsg(todomsg) :> Msg) soCmd
+
+                { model with TodoModel = soModel }, siCmd
     end
 
-type SiLoginMsg(loginMsg:LoginMsg) =
+type SiLoginMsg(loginMsg: LoginMsg) =
     class
         let loginMsg = loginMsg
 
         interface Msg with
             member this.Update model =
                 let soModel, soCmd = loginMsg.Update model.LoginModel
-                let siCmd = Cmd.map (fun loginmsg -> SiLoginMsg(loginmsg):> Msg) soCmd
-                {model with LoginModel = soModel}, siCmd
+
+                let siCmd =
+                    Cmd.map (fun loginmsg -> SiLoginMsg(loginmsg) :> Msg) soCmd
+
+                { model with LoginModel = soModel }, siCmd
     end
 
-type SiNavigatorMsg(navigatorMsg:INavigatorMsg) =
+type SiNavigatorMsg(navigatorMsg: INavigatorMsg) =
     class
         let navigatorMsg = navigatorMsg
 
         interface Msg with
             member this.Update model =
                 let soModel, soCmd = navigatorMsg.Update model.NavigatorModel
-                let siCmd = Cmd.map (fun navigatormsg -> SiNavigatorMsg(navigatormsg):> Msg) soCmd
-                {model with NavigatorModel = soModel; CurrentPage = soModel.CurrentPage}, siCmd
+
+                let siCmd =
+                    Cmd.map (fun navigatormsg -> SiNavigatorMsg(navigatormsg) :> Msg) soCmd
+
+                { model with
+                      NavigatorModel = soModel
+                      CurrentPage = soModel.CurrentPage },
+                siCmd
     end
 
 type MsgFactory() =

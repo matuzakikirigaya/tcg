@@ -11,7 +11,10 @@ type CurrentPage =
     | LoginPage
     | TodoPage
 
-type NavigatorModel = { CurrentPage: CurrentPage ; User:User}
+type NavigatorModel =
+    { CurrentPage: CurrentPage
+      User: User }
+
 type INavigatorMsg = IMsg<NavigatorModel>
 
 type JumpToLogIn() =
@@ -35,13 +38,14 @@ type NavigatorMsgFactory() =
     end
 
 type NavigotorProps =
-    { NavigatorDispatch: INavigatorMsg -> Unit }
+    { NavigatorDispatch: INavigatorMsg -> Unit
+      NavigatorModel: NavigatorModel }
 
 
 open Fable.React.Props
 
 let navigatorView =
-    fun { NavigatorDispatch = dispatch } ->
+    fun { NavigatorDispatch = dispatch; NavigatorModel = navigatorModel } ->
         let navigatorMsgFactory = NavigatorMsgFactory()
         let jumpToLogIn = navigatorMsgFactory.JumpToLogIn()
         let jumpToTodo = navigatorMsgFactory.JumpToTodo()
@@ -51,5 +55,8 @@ let navigatorView =
             ]
             button [ OnClick(fun _ -> dispatch jumpToLogIn) ] [
                 str "Login"
+            ]
+            div [] [
+                str navigatorModel.User.UserName
             ]
         ]

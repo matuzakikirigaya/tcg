@@ -17,25 +17,15 @@ type NavigatorModel =
 
 type INavigatorMsg = IMsg<NavigatorModel>
 
-type JumpToLogIn() =
-    class
-        interface INavigatorMsg with
-            member this.Update model =
-                { model with CurrentPage = LoginPage }, Cmd.none
-    end
+let JumpToLogIn =
+    { new INavigatorMsg with
+        member this.Update model =
+            { model with CurrentPage = LoginPage }, Cmd.none }
 
-type JumpToTodo() =
-    class
-        interface INavigatorMsg with
-            member this.Update model =
-                { model with CurrentPage = TodoPage }, Cmd.none
-    end
-
-type NavigatorMsgFactory() =
-    class
-        member _.JumpToLogIn() = JumpToLogIn() :> INavigatorMsg
-        member _.JumpToTodo() = JumpToTodo() :> INavigatorMsg
-    end
+let JumpToTodo =
+    { new INavigatorMsg with
+        member this.Update model =
+            { model with CurrentPage = TodoPage }, Cmd.none }
 
 type NavigotorProps =
     { NavigatorDispatch: INavigatorMsg -> Unit
@@ -46,17 +36,12 @@ open Fable.React.Props
 
 let navigatorView =
     fun { NavigatorDispatch = dispatch; NavigatorModel = navigatorModel } ->
-        let navigatorMsgFactory = NavigatorMsgFactory()
-        let jumpToLogIn = navigatorMsgFactory.JumpToLogIn()
-        let jumpToTodo = navigatorMsgFactory.JumpToTodo()
         div [] [
-            button [ OnClick(fun _ -> dispatch jumpToTodo) ] [
+            button [ OnClick(fun _ -> dispatch JumpToTodo) ] [
                 str "Todo"
             ]
-            button [ OnClick(fun _ -> dispatch jumpToLogIn) ] [
+            button [ OnClick(fun _ -> dispatch JumpToLogIn) ] [
                 str "Login"
             ]
-            div [] [
-                str navigatorModel.User
-            ]
+            div [] [ str navigatorModel.User ]
         ]

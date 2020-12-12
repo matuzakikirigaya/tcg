@@ -8,6 +8,7 @@
         <None Include="index.html" />
         <None Include="paket.references" />
         <Compile Include="Util/ElmishView.fs" />
+        <Compile Include="Util/Msg.fs" />
         <Compile Include="Page/Navigator.fs" />
         <Compile Include="Page/Todo.fs" />
         <Compile Include="Page/Login.fs" />

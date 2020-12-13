@@ -10,7 +10,7 @@ type LoginModel =
     { login: Login
       ErrorMsg: option<exn>
       IsRunning: bool
-      UserData: option<UserData> }
+      UserData: Never<UserData> }
 
 type LoginMsg = IMsg<LoginModel>
 

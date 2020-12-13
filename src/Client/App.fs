@@ -13,6 +13,7 @@ Program.mkProgram Index.Program.init Index.Program.update Index.Program.view
 |> Program.withConsoleTrace
 |> Program.withDebugger
 #endif
+// |> Program.withSubscription Channel.subscription
 |> Program.withReactSynchronous "elmish-app"
 #if DEBUG
 #endif

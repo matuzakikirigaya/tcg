@@ -10,6 +10,7 @@ open Fable.React
 type CurrentPage =
     | LoginPage
     | TodoPage
+    | ChatPage
 
 type NavigatorModel =
     { CurrentPage: CurrentPage
@@ -27,6 +28,10 @@ let JumpToTodo =
         member this.Update model =
             { model with CurrentPage = TodoPage }, Cmd.none }
 
+let JumpToChat =
+    { new INavigatorMsg with
+        member this.Update model =
+            { model with CurrentPage = ChatPage}, Cmd.none }
 type NavigotorProps =
     { NavigatorDispatch: INavigatorMsg -> Unit
       NavigatorModel: NavigatorModel }
@@ -42,6 +47,9 @@ let navigatorView =
             ]
             button [ OnClick(fun _ -> dispatch JumpToLogIn) ] [
                 str "Login"
+            ]
+            button [ OnClick(fun _ -> dispatch JumpToChat) ] [
+                str "Chat"
             ]
             div [] [ str navigatorModel.User ]
         ]

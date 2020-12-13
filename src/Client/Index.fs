@@ -15,17 +15,24 @@ open LocalStorage
 open Client.Utils.Msg
 open System
 
+open Pages.Chat
 
 let init (): Model * Cmd<Msg> =
     let todoModel = { Todos = []; Input = "" }
 
-    let loadUser () : UserData option =
-        let userDecoder = Decode.Auto.generateDecoder<UserData>()
+    let loadUser (): UserData option =
+        let userDecoder = Decode.Auto.generateDecoder<UserData> ()
         match LocalStorage.load userDecoder "user" with
         | Ok user -> Some user
         | Error _ -> None
-    let user = loadUser () ;
-    let userName = match user with Some u -> u.userName  | _ -> "guesty"
+
+    let user = loadUser ()
+
+    let userName =
+        match user with
+        | Some u -> u.userName
+        | _ -> "guesty"
+
     let loginModel =
         { login =
               { userName = userName
@@ -44,13 +51,16 @@ let init (): Model * Cmd<Msg> =
         { CurrentPage = TodoPage
           User = userName }
 
+    let clientChatModel, _ = chatInit ()
+
     ({ NavigatorModel = navigatorModel
        TodoModel = todoModel
        LoginModel = loginModel
+       ClientChatModel = clientChatModel
        CurrentPage = TodoPage }),
     cmd
 
-let update (msg: Msg) (model1: Model): Model * Cmd<Msg> = msg.Update model1
+let update (msg: Msg) (model: Model): Model * Cmd<Msg> = msg.Update model
 open Fable.React
 
 let view (model: Model) (dispatch: Msg -> unit) =
@@ -73,5 +83,10 @@ let view (model: Model) (dispatch: Msg -> unit) =
                     loginView
                         { loginModel = model.LoginModel
                           loginDispatch = (dispatch << msgFactory.SiLoginMsg) }
+            | chatPage ->
+                yield
+                    chatView
+                        {| clientChatModel = model.ClientChatModel
+                           dispatch = (dispatch << msgFactory.SiClientChatMsg) |}
         ]
     ]

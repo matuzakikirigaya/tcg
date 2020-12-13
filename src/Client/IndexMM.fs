@@ -8,11 +8,13 @@ open Pages.Navigator
 open Shared
 
 open Client.Utils.Msg
+open Pages.Chat
 
 type Model =
     { NavigatorModel: NavigatorModel
       TodoModel: TodoModel
       LoginModel: LoginModel
+      ClientChatModel: ClientChatModel
       CurrentPage: CurrentPage }
 
 type Msg = IMsg<Model>
@@ -55,6 +57,19 @@ type SiLoginMsg(loginMsg: LoginMsg) =
                                 User = user } },
                 siCmd
     end
+type SiChatMsg(chatMsg: ClientChatMsg) =
+    class
+        let chatMsg = chatMsg
+
+        interface Msg with
+            member this.Update model =
+                let soModel, soCmd = chatMsg.Update model.ClientChatModel
+
+                let siCmd =
+                    Cmd.map (fun todomsg -> SiChatMsg(todomsg) :> Msg) soCmd
+
+                { model with ClientChatModel = soModel }, siCmd
+    end
 
 type SiNavigatorMsg(navigatorMsg: INavigatorMsg) =
     class
@@ -78,4 +93,5 @@ type MsgFactory() =
         member _.SiTodoMsg(todoMsg) = SiTodoMsg(todoMsg) :> Msg
         member _.SiLoginMsg(loginMsg) = SiLoginMsg(loginMsg) :> Msg
         member _.SiNavigatorMsg(navigatorMsg) = SiNavigatorMsg(navigatorMsg) :> Msg
+        member _.SiClientChatMsg(clientChatMsg) = SiChatMsg(clientChatMsg) :> Msg
     end

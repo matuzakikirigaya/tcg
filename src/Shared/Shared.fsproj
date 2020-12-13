@@ -6,6 +6,7 @@
   <ItemGroup>
     <Compile Include="Model/Login.fs" />
     <Compile Include="Model/Todos.fs" />
+    <Compile Include="Model/Chat.fs" />
     <Compile Include="Shared.fs" />
   </ItemGroup>
 </Project>

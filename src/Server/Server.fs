@@ -44,12 +44,6 @@ let todosApi =
             | Error e -> return failwith e
         } }
 
-let loginApi =
-    {
-        createUser = fun () -> async { return true }
-        loggingIn = fun Login -> async { return loginStorage.loggingIn Login }
-    }
-
 let webApp page =
     Remoting.createApi()
     |> Remoting.withRouteBuilder Route.builder
@@ -58,7 +52,6 @@ let webApp page =
 
 let webApp2 = router {
     forward "" (webApp todosApi)
-    get "/login" (webApp loginApi)
     post "/api/users/login/" Auth.login
 }
 

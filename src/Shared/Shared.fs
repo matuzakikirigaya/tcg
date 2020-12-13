@@ -30,8 +30,3 @@ type Login = {
     password: string
     passwordId: Guid
 }
-
-type ILoginApi = {
-    createUser : unit -> Async<bool>
-    loggingIn : Login -> Async<bool>
-}

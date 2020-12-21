@@ -42,10 +42,8 @@ let init (): Model * Cmd<Msg> =
           IsRunning = false
           UserData = None }
 
-    let msgFactory = MsgFactory()
-
     let cmd =
-        Cmd.OfAsync.perform todosApi.getTodos () (msgFactory.SiTodoMsg << GotTodo)
+        Cmd.OfAsync.perform todosApi.getTodos () (TodoMsg << GotTodo)
 
     let navigatorModel: NavigatorModel =
         { CurrentPage = TodoPage
@@ -60,16 +58,15 @@ let init (): Model * Cmd<Msg> =
        CurrentPage = TodoPage }),
     cmd
 
-let update (msg: Msg) (model: Model): Model * Cmd<Msg> = msg.Update model
+let update (msg: Msg) (model: Model): Model * Cmd<Msg> = model.Update msg
 open Fable.React
 
 let view (model: Model) (dispatch: Msg -> unit) =
     let CurrentPage = model.CurrentPage
-    let msgFactory = MsgFactory()
     div [] [
         navigatorView
             ({ NavigatorModel = model.NavigatorModel
-               NavigatorDispatch = (dispatch << msgFactory.SiNavigatorMsg) })
+               NavigatorDispatch = (dispatch << NavigatorMsg) })
         hr []
         div [] [
             match CurrentPage with
@@ -77,15 +74,15 @@ let view (model: Model) (dispatch: Msg -> unit) =
                 yield
                     todoView
                         { TodoModel = model.TodoModel
-                          TodoDispatch = (dispatch << msgFactory.SiTodoMsg) }
+                          TodoDispatch = (dispatch << TodoMsg) }
             | LoginPage ->
                 yield
                     loginView
                         { loginModel = model.LoginModel
-                          loginDispatch = (dispatch << msgFactory.SiLoginMsg) }
+                          loginDispatch = (dispatch << LoginMsg) }
             | chatPage ->
                 yield
-                    msgFactory.SiWebSocketMsg
+                    WebSocketMsg
                     >> dispatch
                     |> model.WebSocketModel.View
         ]

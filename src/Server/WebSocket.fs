@@ -13,7 +13,10 @@ open Microsoft.Extensions.Logging
 open Shared.Model.WebSocket
 open Thoth.Json.Net
 /// Provides some simple functions over the ISocketHub interface.
-
+let sendMessage (hub:Channels.ISocketHub) socketId (payload:WebSocketSubstance) = task {
+    let payload = Encode.Auto.toString(0, payload)
+    do! hub.SendMessageToClient "/channel" socketId "" payload
+}
 /// Sends a message to all connected clients.
 let broadcastMessage (hub: Channels.ISocketHub) (payload: WebSocketSubstance) =
     task {

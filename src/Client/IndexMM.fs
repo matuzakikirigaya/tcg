@@ -10,89 +10,50 @@ open Shared
 open Client.Utils.Msg
 open Pages.Chat
 
+type Msg =
+    | NavigatorMsg of NavigatorMsg
+    | TodoMsg of TodoMsg
+    | LoginMsg of LoginMsg
+    | WebSocketMsg of WebSocketMsg
+
 type Model =
     { NavigatorModel: NavigatorModel
       TodoModel: TodoModel
       LoginModel: LoginModel
       WebSocketModel: WebSocketModel
       CurrentPage: CurrentPage }
+    member this.Update msg =
+        match msg with
+        | TodoMsg todoMsg ->
+            let soModel, soCmd = this.TodoModel.Update todoMsg
+            let siCmd = Cmd.map TodoMsg soCmd
+            { this with TodoModel = soModel }, siCmd
+        | LoginMsg loginMsg ->
+            let soModel, soCmd = this.LoginModel.Update loginMsg
 
-type Msg = IMsg<Model>
+            let siCmd = Cmd.map LoginMsg soCmd
 
-type SiTodoMsg(todoMsg: ITodoMsg) =
-    class
-        let todoMsg = todoMsg
+            let user =
+                match soModel.UserData with
+                | Some u -> u.userName
+                | _ -> this.NavigatorModel.User
 
-        interface Msg with
-            member this.Update model =
-                let soModel, soCmd = todoMsg.Update model.TodoModel
+            { this with
+                  LoginModel = soModel
+                  NavigatorModel = { this.NavigatorModel with User = user } },
+            siCmd
+        | WebSocketMsg webSocketMsg ->
+            let soModel, soCmd = this.WebSocketModel.Update webSocketMsg
+            let siCmd = Cmd.map WebSocketMsg soCmd
+            { this with WebSocketModel = soModel }, siCmd
+        | NavigatorMsg navigatorMsg ->
+            let soModel, soCmd = this.NavigatorModel.Update navigatorMsg
 
-                let siCmd =
-                    Cmd.map (fun todomsg -> SiTodoMsg(todomsg) :> Msg) soCmd
+            let siCmd = Cmd.map NavigatorMsg soCmd
 
+            { this with
+                  NavigatorModel = soModel
+                  CurrentPage = soModel.CurrentPage },
+            siCmd
 
-                { model with TodoModel = soModel }, siCmd
-    end
-
-type SiLoginMsg(loginMsg: LoginMsg) =
-    class
-        let loginMsg = loginMsg
-
-        interface Msg with
-            member this.Update model =
-                let soModel, soCmd = loginMsg.Update model.LoginModel
-
-                let siCmd =
-                    Cmd.map (fun loginmsg -> SiLoginMsg(loginmsg) :> Msg) soCmd
-
-                let user =
-                    match soModel.UserData with
-                    | Some u -> u.userName
-                    | _ -> model.NavigatorModel.User
-
-                { model with
-                      LoginModel = soModel
-                      NavigatorModel =
-                          { model.NavigatorModel with
-                                User = user } },
-                siCmd
-    end
-
-type SiWebSocketMsg(chatMsg: WebSocketMsg) =
-    class
-        let chatMsg = chatMsg
-
-        interface Msg with
-            member this.Update model =
-                let soModel, soCmd = model.WebSocketModel.Update chatMsg
-
-                let siCmd =
-                    Cmd.map (fun todomsg -> SiWebSocketMsg(todomsg) :> Msg) soCmd
-
-                { model with WebSocketModel = soModel }, siCmd
-    end
-
-type SiNavigatorMsg(navigatorMsg: INavigatorMsg) =
-    class
-        let navigatorMsg = navigatorMsg
-
-        interface Msg with
-            member this.Update model =
-                let soModel, soCmd = navigatorMsg.Update model.NavigatorModel
-
-                let siCmd =
-                    Cmd.map (fun navigatormsg -> SiNavigatorMsg(navigatormsg) :> Msg) soCmd
-
-                { model with
-                      NavigatorModel = soModel
-                      CurrentPage = soModel.CurrentPage },
-                siCmd
-    end
-
-type MsgFactory() =
-    class
-        member _.SiTodoMsg(todoMsg) = SiTodoMsg(todoMsg) :> Msg
-        member _.SiLoginMsg(loginMsg) = SiLoginMsg(loginMsg) :> Msg
-        member _.SiNavigatorMsg(navigatorMsg) = SiNavigatorMsg(navigatorMsg) :> Msg
-        member _.SiWebSocketMsg(clientChatMsg) = SiWebSocketMsg(clientChatMsg) :> Msg
-    end
+// NavigatorMsg

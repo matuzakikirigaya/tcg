@@ -12,28 +12,28 @@ type CurrentPage =
     | TodoPage
     | WebSocketPage
 
+
+type NavigatorMsg =
+    | JumpToLogIn
+    | JumpToTodo
+    | JumpToChat
+
 type NavigatorModel =
     { CurrentPage: CurrentPage
       User: string }
+    member model.Update msg =
+        match msg with
+        | JumpToLogIn -> { model with CurrentPage = LoginPage }, Cmd.none
 
-type INavigatorMsg = IMsg<NavigatorModel>
+        | JumpToTodo -> { model with CurrentPage = TodoPage }, Cmd.none
 
-let JumpToLogIn =
-    { new INavigatorMsg with
-        member this.Update model =
-            { model with CurrentPage = LoginPage }, Cmd.none }
+        | JumpToChat ->
+            { model with
+                  CurrentPage = WebSocketPage },
+            Cmd.none
 
-let JumpToTodo =
-    { new INavigatorMsg with
-        member this.Update model =
-            { model with CurrentPage = TodoPage }, Cmd.none }
-
-let JumpToChat =
-    { new INavigatorMsg with
-        member this.Update model =
-            { model with CurrentPage = WebSocketPage}, Cmd.none }
 type NavigotorProps =
-    { NavigatorDispatch: INavigatorMsg -> Unit
+    { NavigatorDispatch: NavigatorMsg -> Unit
       NavigatorModel: NavigatorModel }
 
 

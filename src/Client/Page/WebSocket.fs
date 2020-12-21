@@ -45,25 +45,27 @@ type WebSocketModel =
     member This.View(dispatch: WebSocketMsg -> unit): ReactElement =
         div [] [
             div []
-            <| List.map (fun value -> str value.Substance) This.ReceivedSubstance
+            <| List.map (fun value -> div [] [ str value.substance ]) This.ReceivedSubstance
 
-            div [] [
+            div [ClassName "sub_title"] [
                 (match This.ConnectionState with
-                 | DisConnected -> str " hoge"
-                 | _ -> str "fuga")
+                 | DisConnected -> str "dis"
+                 | _ -> str "connected")
             ]
-            input [ OnChange(fun ev ->
-                        MChangeSubstance { Substance = (ev.Value) }
-                        |> dispatch) ]
-            button [ OnMouseDown(fun ev -> dispatch MSubmitSubstance) ] [
+            input [ OnChange
+                        (fun ev ->
+                            MChangeSubstance { substance = (ev.Value) }
+                            |> dispatch) ]
+            button [ OnMouseDown(fun ev -> dispatch MSubmitSubstance)
+                     ClassName "msr_btn13" ] [
                 str "submit"
             ]
         ]
 
 let webSocketinit () =
     { ConnectionState = DisConnected
-      ReceivedSubstance = [ { Substance = "first" } ]
-      SendingSubstance = { Substance = "" } },
+      ReceivedSubstance = [ { substance = "first" } ]
+      SendingSubstance = { substance = "" } },
     Cmd.none
 
 open Browser.WebSocket
@@ -86,14 +88,17 @@ let buildWsSender (ws: WebSocket): WsSender =
 
         ws.send message
 
+open Browser.WebSocket
+open Browser.Types
+
 let subscription _ =
     let sub dispatch =
         /// Handles push messages from the server and relays them into Elmish messages.
         let onWebSocketMessage (msg: MessageEvent) =
             let msg =
-                msg.data |> decode<{| Payload: string |}>
+                msg.data |> decode<{| payload: string |}>
 
-            msg.Payload
+            msg.payload
             |> decode<WebSocketSubstance>
             |> MReceivedSubstance
             |> dispatch
@@ -104,17 +109,21 @@ let subscription _ =
                 WebSocket.Create "ws://localhost:8085/channel"
 
             ws.onmessage <- onWebSocketMessage
+
             ws.onopen <-
                 (fun ev ->
                     buildWsSender ws
                     |> Connected
                     |> MConnect
                     |> dispatch
+
                     printfn "WebSocket opened")
+
             ws.onclose <-
                 (fun ev ->
                     DisConnected |> MConnect |> dispatch
                     printfn "WebSocket closed. Retrying connection"
+
                     promise {
                         do! Promise.sleep 2000
                         Connecting |> MConnect |> dispatch

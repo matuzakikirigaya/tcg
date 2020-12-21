@@ -16,7 +16,7 @@ Program.mkProgram Index.Program.init Index.Program.update Index.Program.view
 |> Program.withConsoleTrace
 |> Program.withDebugger
 #endif
-|> Program.withSubscription (fun x -> Cmd.map (MsgFactory()).SiWebSocketMsg (subscription x))
+|> Program.withSubscription (fun x -> Cmd.map Index.MM.WebSocketMsg <| subscription x)
 // |> Program.withSubscription Channel.subscription
 |> Program.withReactSynchronous "elmish-app"
 #if DEBUG

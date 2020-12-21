@@ -22,6 +22,7 @@ let init (): Model * Cmd<Msg> =
 
     let loadUser (): UserData option =
         let userDecoder = Decode.Auto.generateDecoder<UserData> ()
+
         match LocalStorage.load userDecoder "user" with
         | Ok user -> Some user
         | Error _ -> None
@@ -59,16 +60,20 @@ let init (): Model * Cmd<Msg> =
     cmd
 
 let update (msg: Msg) (model: Model): Model * Cmd<Msg> = model.Update msg
+
 open Fable.React
+open Fable.React.Props
 
 let view (model: Model) (dispatch: Msg -> unit) =
     let CurrentPage = model.CurrentPage
-    div [] [
-        navigatorView
-            ({ NavigatorModel = model.NavigatorModel
-               NavigatorDispatch = (dispatch << NavigatorMsg) })
+
+    div [ Class "index" ] [
+        navigatorView (
+            { NavigatorModel = model.NavigatorModel
+              NavigatorDispatch = (dispatch << NavigatorMsg) }
+        )
         hr []
-        div [] [
+        div [ Class "page" ] [
             match CurrentPage with
             | TodoPage ->
                 yield

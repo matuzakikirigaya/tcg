@@ -46,22 +46,24 @@ let navigatorView =
         let navigatorContent = "navigatorContent"
 
 
-        div [] [
-            div [] [ str navigatorModel.User ]
-            div [ Class buttonCss ] [
-                div [ OnClick(fun _ -> dispatch JumpToTodo)
-                      Class navigatorContent ] [
-                    str "Todo"
-                ]
+        div [ Class "navigator" ] [
+            div [ Class "navigator_list_margin" ] [
+                div [] [ str navigatorModel.User ]
+                div [ Class buttonCss ] [
+                    div [ OnClick(fun _ -> dispatch JumpToTodo)
+                          Class navigatorContent ] [
+                        str "Todo"
+                    ]
 
-                div [ OnClick(fun _ -> dispatch JumpToLogIn)
-                      Class navigatorContent ] [
-                    str "Login"
-                ]
+                    div [ OnClick(fun _ -> dispatch JumpToLogIn)
+                          Class navigatorContent ] [
+                        str "Login"
+                    ]
 
-                div [ OnClick(fun _ -> dispatch JumpToChat)
-                      Class navigatorContent ] [
-                    str "Chat"
+                    div [ OnClick(fun _ -> dispatch JumpToChat)
+                          Class navigatorContent ] [
+                        str "Chat"
+                    ]
                 ]
             ]
         ]

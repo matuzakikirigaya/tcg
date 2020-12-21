@@ -1,12 +1,32 @@
+.index {
+    display: flex;
+    flex-direction: row;
+}
+.page {
+    width: 1500px;
+}
+.navigator {
+    /* display: flex; */
+    flex-direction: row;
+}
+.game {
+    display: flex;
+    flex-direction: row;
+}
 .sub_title {
     background-color: LightGrey;
     color: rgb(23, 180, 194);
 }
+.navigator_list_margin {
+    margin: auto;
+}
 .navigatorList {
     display: flex;
+    flex-direction: column;
 }
 .navigatorContent {
     padding: 0.5em 1em;
+    height: 30px;
     margin: 2em 0;
     font-weight: bold;
     color: #6091d3; /*文字色*/
@@ -31,8 +51,8 @@
     display: flex;
     height: 110px;
     width: 80px;
-    background-color: aliceblue;
-    border: solid 1px aqua;
+    background-color: rgb(68, 204, 90);
+    border: solid 1px rgb(42, 240, 108);
 }
 .Self_rearGuard_margin {
     display: flex;
@@ -61,8 +81,8 @@
     display: flex;
     height: 110px;
     width: 80px;
-    background-color: aliceblue;
-    border: solid 1px aqua;
+    background-color: rgb(199, 230, 116);
+    border: solid 1px rgb(160, 216, 88);
 }
 .Self_zone {
     display: flex;

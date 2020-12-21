@@ -136,3 +136,5 @@ let subscription _ =
         connect ()
 
     Cmd.ofSub sub
+
+    Cmd.ofSub sub

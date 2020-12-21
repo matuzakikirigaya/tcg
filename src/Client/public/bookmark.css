@@ -1,5 +1,88 @@
 .sub_title {
-    text-align: center;
     background-color: LightGrey;
-    color: white;
+    color: rgb(23, 180, 194);
+}
+.navigatorList {
+    display: flex;
+}
+.navigatorContent {
+    padding: 0.5em 1em;
+    margin: 2em 0;
+    font-weight: bold;
+    color: #6091d3; /*文字色*/
+    background: #fff;
+    border: solid 3px #6091d3; /*線*/
+    border-radius: 10px; /*角の丸み*/
+}
+.Self_field {
+    width: 800px;
+    display: flex;
+    flex-direction: column;
+}
+.Self_vanGuard {
+    display: flex;
+    height: 120px;
+}
+.Self_vanGuard_margin {
+    display: flex;
+    margin: auto;
+}
+.Self_vanGuard_element {
+    display: flex;
+    height: 110px;
+    width: 80px;
+    background-color: aliceblue;
+    border: solid 1px aqua;
+}
+.Self_rearGuard_margin {
+    display: flex;
+    margin: auto;
+}
+.Self_rearGuard {
+    display: flex;
+    height: 120px;
+}
+.Self_rearGuard_element {
+    display: flex;
+    height: 110px;
+    width: 80px;
+    background-color: aliceblue;
+    border: solid 1px aqua;
+}
+.Self_hand_margin {
+    display: flex;
+    margin: auto;
+}
+.Self_hand {
+    display: flex;
+    height: 120px;
+}
+.Self_hand_element {
+    display: flex;
+    height: 110px;
+    width: 80px;
+    background-color: aliceblue;
+    border: solid 1px aqua;
+}
+.Self_zone {
+    display: flex;
+    flex-direction: column;
+}
+.Self_deck {
+    display: flex;
+    height: 110px;
+    width: 80px;
+    background-color: aliceblue;
+    border: solid 1px aqua;
+}
+.Self_graveyard {
+    display: flex;
+    height: 110px;
+    width: 80px;
+    background-color: aliceblue;
+    border: solid 1px aqua;
+}
+.Self_board {
+    display: flex;
+    flex-direction: row;
 }

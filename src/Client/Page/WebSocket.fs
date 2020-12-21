@@ -44,22 +44,25 @@ type WebSocketModel =
 
     member This.View(dispatch: WebSocketMsg -> unit): ReactElement =
         div [] [
-            div []
-            <| List.map (fun value -> div [] [ str value.substance ]) This.ReceivedSubstance
+            div [] [
+                div []
+                <| List.map (fun value -> div [] [ str value.substance ]) This.ReceivedSubstance
 
-            div [ClassName "sub_title"] [
-                (match This.ConnectionState with
-                 | DisConnected -> str "dis"
-                 | _ -> str "connected")
+                div [ ClassName "sub_title" ] [
+                    (match This.ConnectionState with
+                     | DisConnected -> str "dis"
+                     | _ -> str "connected")
+                ]
+                input [ OnChange
+                            (fun ev ->
+                                MChangeSubstance { substance = (ev.Value) }
+                                |> dispatch) ]
+                button [ OnMouseDown(fun ev -> dispatch MSubmitSubstance)
+                         ClassName "msr_btn13" ] [
+                    str "submit"
+                ]
             ]
-            input [ OnChange
-                        (fun ev ->
-                            MChangeSubstance { substance = (ev.Value) }
-                            |> dispatch) ]
-            button [ OnMouseDown(fun ev -> dispatch MSubmitSubstance)
-                     ClassName "msr_btn13" ] [
-                str "submit"
-            ]
+            Client.Game.Field.view
         ]
 
 let webSocketinit () =

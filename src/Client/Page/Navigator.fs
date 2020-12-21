@@ -40,16 +40,28 @@ type NavigotorProps =
 open Fable.React.Props
 
 let navigatorView =
-    fun { NavigatorDispatch = dispatch; NavigatorModel = navigatorModel } ->
+    fun { NavigatorDispatch = dispatch
+          NavigatorModel = navigatorModel } ->
+        let buttonCss = "navigatorList"
+        let navigatorContent = "navigatorContent"
+
+
         div [] [
-            button [ OnClick(fun _ -> dispatch JumpToTodo) ] [
-                str "Todo"
-            ]
-            button [ OnClick(fun _ -> dispatch JumpToLogIn) ] [
-                str "Login"
-            ]
-            button [ OnClick(fun _ -> dispatch JumpToChat) ] [
-                str "Chat"
-            ]
             div [] [ str navigatorModel.User ]
+            div [ Class buttonCss ] [
+                div [ OnClick(fun _ -> dispatch JumpToTodo)
+                      Class navigatorContent ] [
+                    str "Todo"
+                ]
+
+                div [ OnClick(fun _ -> dispatch JumpToLogIn)
+                      Class navigatorContent ] [
+                    str "Login"
+                ]
+
+                div [ OnClick(fun _ -> dispatch JumpToChat)
+                      Class navigatorContent ] [
+                    str "Chat"
+                ]
+            ]
         ]

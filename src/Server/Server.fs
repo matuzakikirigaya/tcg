@@ -63,6 +63,7 @@ let app =
         use_jwt_authentication Jwt.secret Jwt.issuer
         use_static "public"
         use_gzip
+        add_channel "/channel" WebSocket.channel
     }
 
 run app

@@ -14,7 +14,7 @@ type Model =
     { NavigatorModel: NavigatorModel
       TodoModel: TodoModel
       LoginModel: LoginModel
-      ClientChatModel: ClientChatModel
+      WebSocketModel: WebSocketModel
       CurrentPage: CurrentPage }
 
 type Msg = IMsg<Model>
@@ -57,18 +57,19 @@ type SiLoginMsg(loginMsg: LoginMsg) =
                                 User = user } },
                 siCmd
     end
-type SiChatMsg(chatMsg: ClientChatMsg) =
+
+type SiWebSocketMsg(chatMsg: WebSocketMsg) =
     class
         let chatMsg = chatMsg
 
         interface Msg with
             member this.Update model =
-                let soModel, soCmd = chatMsg.Update model.ClientChatModel
+                let soModel, soCmd = model.WebSocketModel.Update chatMsg
 
                 let siCmd =
-                    Cmd.map (fun todomsg -> SiChatMsg(todomsg) :> Msg) soCmd
+                    Cmd.map (fun todomsg -> SiWebSocketMsg(todomsg) :> Msg) soCmd
 
-                { model with ClientChatModel = soModel }, siCmd
+                { model with WebSocketModel = soModel }, siCmd
     end
 
 type SiNavigatorMsg(navigatorMsg: INavigatorMsg) =
@@ -93,5 +94,5 @@ type MsgFactory() =
         member _.SiTodoMsg(todoMsg) = SiTodoMsg(todoMsg) :> Msg
         member _.SiLoginMsg(loginMsg) = SiLoginMsg(loginMsg) :> Msg
         member _.SiNavigatorMsg(navigatorMsg) = SiNavigatorMsg(navigatorMsg) :> Msg
-        member _.SiClientChatMsg(clientChatMsg) = SiChatMsg(clientChatMsg) :> Msg
+        member _.SiWebSocketMsg(clientChatMsg) = SiWebSocketMsg(clientChatMsg) :> Msg
     end

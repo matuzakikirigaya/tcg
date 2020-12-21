@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Model/WebSocket.fs" />
     <Compile Include="Model/Login.fs" />
     <Compile Include="Model/Todos.fs" />
     <Compile Include="Model/Chat.fs" />

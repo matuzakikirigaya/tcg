@@ -10,7 +10,7 @@ open Fable.React
 type CurrentPage =
     | LoginPage
     | TodoPage
-    | ChatPage
+    | WebSocketPage
 
 type NavigatorModel =
     { CurrentPage: CurrentPage
@@ -31,7 +31,7 @@ let JumpToTodo =
 let JumpToChat =
     { new INavigatorMsg with
         member this.Update model =
-            { model with CurrentPage = ChatPage}, Cmd.none }
+            { model with CurrentPage = WebSocketPage}, Cmd.none }
 type NavigotorProps =
     { NavigatorDispatch: INavigatorMsg -> Unit
       NavigatorModel: NavigatorModel }

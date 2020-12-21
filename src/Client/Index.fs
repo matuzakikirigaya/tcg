@@ -51,12 +51,12 @@ let init (): Model * Cmd<Msg> =
         { CurrentPage = TodoPage
           User = userName }
 
-    let clientChatModel, _ = chatInit ()
+    let webSocketModel, _ = webSocketinit ()
 
     ({ NavigatorModel = navigatorModel
        TodoModel = todoModel
        LoginModel = loginModel
-       ClientChatModel = clientChatModel
+       WebSocketModel = webSocketModel
        CurrentPage = TodoPage }),
     cmd
 
@@ -85,8 +85,8 @@ let view (model: Model) (dispatch: Msg -> unit) =
                           loginDispatch = (dispatch << msgFactory.SiLoginMsg) }
             | chatPage ->
                 yield
-                    chatView
-                        {| clientChatModel = model.ClientChatModel
-                           dispatch = (dispatch << msgFactory.SiClientChatMsg) |}
+                    msgFactory.SiWebSocketMsg
+                    >> dispatch
+                    |> model.WebSocketModel.View
         ]
     ]

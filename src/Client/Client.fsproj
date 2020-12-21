@@ -14,7 +14,7 @@
     <Compile Include="Page/Navigator.fs" />
     <Compile Include="Page/Todo.fs" />
     <Compile Include="Page/Login.fs" />
-    <Compile Include="Page/Chat.fs" />
+    <Compile Include="Page/WebSocket.fs" />
     <Compile Include="IndexMM.fs" />
     <Compile Include="Index.fs" />
     <Compile Include="App.fs" />

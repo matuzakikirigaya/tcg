@@ -4,18 +4,25 @@ open Fable.React
 open Fable.React.Props
 open Shared.Model.Game.Board
 open Shared.Model.Game.Card
-
-type GameMsg = MGetBoard
-
 open Elmish
 
+type GameMsg =
+    | MGetBoard
+    | MGotBoard of ClientBoard
+
+type GameSender = unit -> unit
+
 type GameModel =
-    { ClientBoard: ClientBoard }
+    { ClientBoard: ClientBoard
+      GameSender: GameSender }
     member This.Update(msg: GameMsg): GameModel * Cmd<GameMsg> =
         match msg with
-        | MGetBoard -> This, Cmd.none
+        | MGetBoard ->
+            This.GameSender()
+            This, Cmd.none
+        | MGotBoard board -> { This with ClientBoard = board }, Cmd.none
 
-    member This.View a =
+    member This.View (dispatch: GameMsg -> unit) =
         let selfHandView (selfHand: list<HandCard>) =
             div [ Class "Self_hand" ] [
                 div
@@ -78,6 +85,9 @@ type GameModel =
 
         div [] [
             div [] [
+                button [ OnClick(fun ev -> dispatch MGetBoard) ] [
+                    str "getBoard"
+                ]
                 div [ Class "Self_board" ] [
                     div [ Class "Self_field" ] [
                         selfHandView player.selfHand
@@ -113,4 +123,5 @@ let gameModelInit: GameModel =
                   opponentGraveyard = []
                   opponentRearguard = []
                   opponentVanguard = [] }
-            clientTurn = Shared.Model.Game.Turn.End } }
+            clientTurn = Shared.Model.Game.Turn.End }
+      GameSender = fun () -> () }

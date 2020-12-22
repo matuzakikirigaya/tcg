@@ -2,6 +2,8 @@ module Client.Game.WebSocket
 
 open Shared.Model.WebSocket
 
+open Client.Game.Chat
+
 type ClientSender = ClientApi -> unit
 
 type ConnectionState =
@@ -14,9 +16,7 @@ type ConnectionState =
         | _ -> ()
 
 type WebSocketMsg =
-    | MSubmitSubstance
-    | MChangeSubstance of ChatSubstance
-    | MReceivedSubstance of ChatSubstance
+    | ChatMsg of ChatMsg
     | MConnect of ConnectionState
 
 open Elmish
@@ -26,67 +26,37 @@ open Client.Game.Field
 
 type WebSocketModel =
     { ConnectionState: ConnectionState
-      ReceivedSubstance: list<ChatSubstance>
-      SendingSubstance: ChatSubstance
-      UserName: string
+      ChatModel: ChatModel
       GameModel: GameModel }
     member This.Update(msg: WebSocketMsg): WebSocketModel * Cmd<WebSocketMsg> =
         match msg with
-        | MSubmitSubstance ->
-            This.ConnectionState.SendChatSubsatnce This.SendingSubstance
-            This, Cmd.none
-        | MChangeSubstance sub -> { This with SendingSubstance = sub }, Cmd.none
-        | MReceivedSubstance sub ->
-            { This with
-                  ReceivedSubstance = sub :: This.ReceivedSubstance },
-            Cmd.none
+        | ChatMsg chatmsg ->
+            let (one, two) = This.ChatModel.Update chatmsg
+            { This with ChatModel = one }, Cmd.map ChatMsg two
         | MConnect connection ->
             { This with
-                  ConnectionState = connection },
+                  ConnectionState = connection
+                  ChatModel =
+                      { This.ChatModel with
+                            ChatSender = connection.SendChatSubsatnce } },
             Cmd.none
 
     member This.View(dispatch: WebSocketMsg -> unit): ReactElement =
         div [ Class "game" ] [
-            Client.Game.Field.view This.GameModel.ClientBoard
+            This.GameModel.View()
             hr []
-            div [] [
-                div [ ClassName "sub_title" ] [
-                    (match This.ConnectionState with
-                     | DisConnected -> str "dis"
-                     | _ -> str "connected")
-                ]
-                input [ OnChange
-                            (fun ev ->
-                                MChangeSubstance
-                                    { This.SendingSubstance with
-                                          substance = (ev.Value)
-                                          userName = This.UserName }
-                                |> dispatch) ]
-                button [ OnMouseDown(fun ev -> dispatch MSubmitSubstance)
-                         ClassName "msr_btn13" ] [
-                    str "submit"
-                ]
-                div []
-                <| List.map
-                    (fun value ->
-                        div [] [
-                            str <| value.userName + ":"
-                            br []
-                            div [ Class "substance_right" ] [
-                                str value.substance
-                            ]
-                        ])
-                    This.ReceivedSubstance
-            ]
+            This.ChatModel.view (ChatMsg >> dispatch)
         ]
 
 let webSocketinit initialUserName =
     { ConnectionState = DisConnected
-      ReceivedSubstance = []
-      SendingSubstance =
-          { substance = ""
-            userName = initialUserName }
-      UserName = initialUserName
+      ChatModel =
+          { ChatSender = fun a -> ()
+            ReceivedSubstance = []
+            SendingSubstance =
+                { substance = ""
+                  userName = initialUserName }
+            UserName = initialUserName }
       GameModel = gameModelInit },
     Cmd.none
 
@@ -115,7 +85,7 @@ open Browser.WebSocket
 open Browser.Types
 
 let subscription _ =
-    let sub dispatch =
+    let sub (dispatch: WebSocketMsg -> unit) =
         /// Handles push messages from the server and relays them into Elmish messages.
         let onWebSocketMessage (msg: MessageEvent) =
             let msg =
@@ -126,6 +96,7 @@ let subscription _ =
                 msg.payload
                 |> decode<ChatSubstance>
                 |> MReceivedSubstance
+                |> ChatMsg
                 |> dispatch
             else
                 ()

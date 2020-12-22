@@ -9,6 +9,7 @@ open Shared
 
 open Client.Utils.Msg
 open Client.Game.WebSocket
+
 type Msg =
     | NavigatorMsg of NavigatorMsg
     | TodoMsg of TodoMsg
@@ -42,7 +43,9 @@ type Model =
                   NavigatorModel = { this.NavigatorModel with User = user }
                   WebSocketModel =
                       { this.WebSocketModel with
-                            UserName = user } },
+                            ChatModel =
+                                { this.WebSocketModel.ChatModel with
+                                      UserName = user } } },
             siCmd
         | WebSocketMsg webSocketMsg ->
             let soModel, soCmd = this.WebSocketModel.Update webSocketMsg

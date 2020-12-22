@@ -1,4 +1,4 @@
-module Server.Program
+module Server.Dummy
 
 open Fable.Remoting.Server
 open Fable.Remoting.Giraffe

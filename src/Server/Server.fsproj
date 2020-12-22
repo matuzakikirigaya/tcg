@@ -6,6 +6,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="paket.references" />
+    <Compile Include="Game/GameCore/Dummy.fs" />
     <Compile Include="Game/GameCore/Program.fs" />
     <Compile Include="Game/GameCore/WebSocket/WebSocket.fs" />
     <Compile Include="Jwt.fs" />

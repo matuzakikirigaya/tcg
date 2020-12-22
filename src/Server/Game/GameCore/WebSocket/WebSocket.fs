@@ -13,7 +13,7 @@ open Microsoft.Extensions.Logging
 open Shared.Model.WebSocket
 open Thoth.Json.Net
 
-open Server.Game.Program
+open Server.Game.Dummy
 /// Provides some simple functions over the ISocketHub interface.
 let sendMessage (hub: Channels.ISocketHub) socketId (payload: ChatSubstance) =
     task {

@@ -8,8 +8,7 @@ open Pages.Navigator
 open Shared
 
 open Client.Utils.Msg
-open Pages.Chat
-
+open Client.Game.WebSocket
 type Msg =
     | NavigatorMsg of NavigatorMsg
     | TodoMsg of TodoMsg

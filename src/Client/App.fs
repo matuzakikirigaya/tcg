@@ -9,8 +9,7 @@ open Elmish.HMR
 #endif
 
 open Index.MM
-open Pages.Chat
-
+open Client.Game.WebSocket
 Program.mkProgram Index.Program.init Index.Program.update Index.Program.view
 #if DEBUG
 |> Program.withConsoleTrace

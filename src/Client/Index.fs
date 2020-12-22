@@ -12,11 +12,9 @@ open Shared.Model.Login
 open Thoth.Json
 open LocalStorage
 
-open Client.Utils.Msg
 open System
 
-open Pages.Chat
-
+open Client.Game.WebSocket
 let init (): Model * Cmd<Msg> =
     let todoModel = { Todos = []; Input = "" }
 

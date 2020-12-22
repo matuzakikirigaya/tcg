@@ -1,22 +1,22 @@
-module Pages.Chat
+module Client.Game.WebSocket
 
 open Shared.Model.WebSocket
 
-type WsSender = WebSocketSubstance -> unit
+type ClientSender = ClientApi -> unit
 
 type ConnectionState =
     | DisConnected
-    | Connected of WsSender
+    | Connected of ClientSender
     | Connecting
-    member this.SendSubstance sub =
+    member this.SendChatSubsatnce sub =
         match this with
-        | Connected sender -> sender sub
+        | Connected sender -> sender <| SendChatSubstance sub
         | _ -> ()
 
 type WebSocketMsg =
     | MSubmitSubstance
-    | MChangeSubstance of WebSocketSubstance
-    | MReceivedSubstance of WebSocketSubstance
+    | MChangeSubstance of ChatSubstance
+    | MReceivedSubstance of ChatSubstance
     | MConnect of ConnectionState
 
 open Elmish
@@ -26,14 +26,14 @@ open Client.Game.Field
 
 type WebSocketModel =
     { ConnectionState: ConnectionState
-      ReceivedSubstance: list<WebSocketSubstance>
-      SendingSubstance: WebSocketSubstance
+      ReceivedSubstance: list<ChatSubstance>
+      SendingSubstance: ChatSubstance
       UserName: string
       GameModel: GameModel }
     member This.Update(msg: WebSocketMsg): WebSocketModel * Cmd<WebSocketMsg> =
         match msg with
         | MSubmitSubstance ->
-            This.ConnectionState.SendSubstance This.SendingSubstance
+            This.ConnectionState.SendChatSubsatnce This.SendingSubstance
             This, Cmd.none
         | MChangeSubstance sub -> { This with SendingSubstance = sub }, Cmd.none
         | MReceivedSubstance sub ->
@@ -98,8 +98,9 @@ let inline decode<'a> x =
     |> unbox<string>
     |> Thoth.Json.Decode.Auto.unsafeFromString<'a>
 
-let buildWsSender (ws: WebSocket): WsSender =
-    fun (message: WebSocketSubstance) ->
+let buildClientSender (ws: WebSocket) clientapi =
+    match clientapi with
+    | SendChatSubstance message ->
         let message =
             {| Topic = "sendChatSubstance"
                Ref = ""
@@ -118,12 +119,17 @@ let subscription _ =
         /// Handles push messages from the server and relays them into Elmish messages.
         let onWebSocketMessage (msg: MessageEvent) =
             let msg =
-                msg.data |> decode<{| payload: string |}>
+                msg.data
+                |> decode<{| payload: string; topic: string |}>
 
-            msg.payload
-            |> decode<WebSocketSubstance>
-            |> MReceivedSubstance
-            |> dispatch
+            if msg.topic = "sendChatSubstance" then
+                msg.payload
+                |> decode<ChatSubstance>
+                |> MReceivedSubstance
+                |> dispatch
+            else
+                ()
+
 
         /// Continually tries to connect to the server websocket.
         let rec connect () =
@@ -134,7 +140,7 @@ let subscription _ =
 
             ws.onopen <-
                 (fun ev ->
-                    buildWsSender ws
+                    buildClientSender ws
                     |> Connected
                     |> MConnect
                     |> dispatch

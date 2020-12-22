@@ -22,12 +22,14 @@ type WebSocketMsg =
 open Elmish
 open Fable.React.Props
 open Fable.React
+open Client.Game.Field
 
 type WebSocketModel =
     { ConnectionState: ConnectionState
       ReceivedSubstance: list<WebSocketSubstance>
       SendingSubstance: WebSocketSubstance
-      UserName: string }
+      UserName: string
+      GameModel: GameModel }
     member This.Update(msg: WebSocketMsg): WebSocketModel * Cmd<WebSocketMsg> =
         match msg with
         | MSubmitSubstance ->
@@ -45,7 +47,7 @@ type WebSocketModel =
 
     member This.View(dispatch: WebSocketMsg -> unit): ReactElement =
         div [ Class "game" ] [
-            Client.Game.Field.view
+            Client.Game.Field.view This.GameModel.ClientBoard
             hr []
             div [] [
                 div [ ClassName "sub_title" ] [
@@ -70,7 +72,7 @@ type WebSocketModel =
                         div [] [
                             str <| value.userName + ":"
                             br []
-                            div [Class "substance_right"] [
+                            div [ Class "substance_right" ] [
                                 str value.substance
                             ]
                         ])
@@ -84,7 +86,8 @@ let webSocketinit initialUserName =
       SendingSubstance =
           { substance = ""
             userName = initialUserName }
-      UserName = initialUserName },
+      UserName = initialUserName
+      GameModel = gameModelInit },
     Cmd.none
 
 open Browser.WebSocket

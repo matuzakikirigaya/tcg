@@ -1,12 +1,12 @@
 module Shared.Model.Game.Card
 
 type VanguardType =
-    | VanguardAttackPoint of int
-    | VanguardDefencePoint of int
+    { VanguardAttackPoint: int
+      VanguardDefencePoint: int }
 
 type RearguardType =
-    | RearguardAttackPoint of int
-    | RearguardDefencePoint of int
+    { RearguardAttackPoint: int
+      RearguardDefencePoint: int }
 
 type CardType =
     | VanguardType of VanguardType

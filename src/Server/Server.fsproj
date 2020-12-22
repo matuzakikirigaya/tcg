@@ -6,8 +6,8 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="paket.references" />
-    <Compile Include="Game/Program.fs" />
-    <Compile Include="Game/WebSocket.fs" />
+    <Compile Include="Game/GameCore/Program.fs" />
+    <Compile Include="Game/GameCore/WebSocket/WebSocket.fs" />
     <Compile Include="Jwt.fs" />
     <Compile Include="Auth.fs" />
     <Compile Include="Todo.fs" />

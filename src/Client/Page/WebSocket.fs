@@ -101,7 +101,7 @@ let inline decode<'a> x =
 let buildWsSender (ws: WebSocket): WsSender =
     fun (message: WebSocketSubstance) ->
         let message =
-            {| Topic = ""
+            {| Topic = "sendChatSubstance"
                Ref = ""
                Payload = message |}
 

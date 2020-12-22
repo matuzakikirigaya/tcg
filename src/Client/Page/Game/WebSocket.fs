@@ -9,7 +9,7 @@ open Fable.React.Props
 open Fable.React
 open Client.Game.Field
 
-type ClientSender = ClientApi -> unit
+type ClientSender = ClientSourceApi -> unit
 
 type ConnectionState =
     | DisConnected
@@ -71,90 +71,3 @@ let webSocketinit initialUserName =
             UserName = initialUserName }
       GameModel = gameModelInit },
     Cmd.none
-
-open Browser.WebSocket
-open Browser.Types
-
-let inline decode<'a> x =
-    x
-    |> unbox<string>
-    |> Thoth.Json.Decode.Auto.unsafeFromString<'a>
-
-let buildClientSender (ws: WebSocket) clientapi =
-
-    match clientapi with
-    | SendChatSubstance message ->
-        let message =
-            {| Topic = ClientApi.GetTopicNameWithApi clientapi
-               Ref = ""
-               Payload = message |}
-
-        let message =
-            Thoth.Json.Encode.Auto.toString (0, message)
-
-        ws.send message
-    | GetGameBoard ->
-        let message =
-            {| Topic = ClientApi.GetTopicName.GetGameBoard |}
-
-        let message =
-            Thoth.Json.Encode.Auto.toString (0, message)
-
-        ws.send message
-
-open Browser.WebSocket
-open Browser.Types
-open Shared.Model.Game.Board
-
-let subscription _ =
-    let sub (dispatch: WebSocketMsg -> unit) =
-        /// Handles push messages from the server and relays them into Elmish messages.
-        let onWebSocketMessage (msg: MessageEvent) =
-            let msg =
-                msg.data
-                |> decode<{| payload: string; topic: string |}>
-
-            if msg.topic = ClientApi.GetTopicName.SendChatSubstance then
-                msg.payload
-                |> decode<ChatSubstance>
-                |> MReceivedSubstance
-                |> ChatMsg
-                |> dispatch
-            else if msg.topic = ClientApi.GetTopicName.GetGameBoard then
-                msg.payload
-                |> decode<ClientBoard>
-                |> MGotBoard
-                |> GameMsg
-                |> dispatch
-
-
-        /// Continually tries to connect to the server websocket.
-        let rec connect () =
-            let ws =
-                WebSocket.Create "ws://localhost:8085/channel"
-
-            ws.onmessage <- onWebSocketMessage
-
-            ws.onopen <-
-                (fun ev ->
-                    buildClientSender ws
-                    |> Connected
-                    |> MConnect
-                    |> dispatch
-
-                    printfn "WebSocket opened")
-
-            ws.onclose <-
-                (fun ev ->
-                    DisConnected |> MConnect |> dispatch
-                    printfn "WebSocket closed. Retrying connection"
-
-                    promise {
-                        do! Promise.sleep 2000
-                        Connecting |> MConnect |> dispatch
-                        connect ()
-                    })
-
-        connect ()
-
-    Cmd.ofSub sub

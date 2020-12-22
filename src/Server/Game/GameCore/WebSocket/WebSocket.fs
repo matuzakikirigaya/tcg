@@ -24,7 +24,7 @@ let sendMessage (hub: Channels.ISocketHub) socketId (payload: ChatSubstance) =
 let broadcastChatSubstance (hub: Channels.ISocketHub) (payload: ChatSubstance) =
     task {
         let payload = Encode.Auto.toString (0, payload)
-        do! hub.SendMessageToClients "/channel" ClientApi.GetTopicName.SendChatSubstance payload
+        do! hub.SendMessageToClients "/channel" ClientSourceApi.GetTopicName.SendChatSubstance payload
     }
 
 open Shared.Model.Game.Board
@@ -32,7 +32,7 @@ open Shared.Model.Game.Board
 let sendClientBoard (hub: Channels.ISocketHub) socketId (payload: ClientBoard) =
     task {
         let payload = Encode.Auto.toString (0, payload)
-        do! hub.SendMessageToClient "/channel" socketId ClientApi.GetTopicName.GetGameBoard payload
+        do! hub.SendMessageToClient "/channel" socketId ClientSourceApi.GetTopicName.GetGameBoard payload
     }
 
 /// Sets up the channel to listen to clients.
@@ -49,7 +49,7 @@ let channel =
                 })
 
         handle
-            ClientApi.GetTopicName.SendChatSubstance
+            ClientSourceApi.GetTopicName.SendChatSubstance
             (fun ctx channelInfo message ->
                 task {
                     let hub = ctx.GetService<Channels.ISocketHub>()
@@ -64,7 +64,7 @@ let channel =
                 })
 
         handle
-            ClientApi.GetTopicName.GetGameBoard
+            ClientSourceApi.GetTopicName.GetGameBoard
             (fun ctx clientInfo message ->
                 task {
                     let hub = ctx.GetService<Channels.ISocketHub>()

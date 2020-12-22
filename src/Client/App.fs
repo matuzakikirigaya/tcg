@@ -8,8 +8,10 @@ open Elmish.Debug
 open Elmish.HMR
 #endif
 
+open Client.Game.Subscription
 open Index.MM
 open Client.Game.WebSocket
+
 Program.mkProgram Index.Program.init Index.Program.update Index.Program.view
 #if DEBUG
 |> Program.withConsoleTrace

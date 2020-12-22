@@ -14,9 +14,11 @@
     <Compile Include="Page/Navigator.fs" />
     <Compile Include="Page/Todo.fs" />
     <Compile Include="Page/Login.fs" />
+    <Compile Include="Page/Game/Api/Index.fs" />
     <Compile Include="Page/Game/Chat.fs" />
     <Compile Include="Page/Game/Field.fs" />
     <Compile Include="Page/Game/WebSocket.fs" />
+    <Compile Include="Page/Game/Subscription.fs" />
     <Compile Include="IndexMM.fs" />
     <Compile Include="Index.fs" />
     <Compile Include="App.fs" />

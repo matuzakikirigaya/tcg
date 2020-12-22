@@ -5,14 +5,15 @@ module Shared.Model.WebSocket
 } *)
 type ChatSubstance = { substance: string; userName: string }
 
-type ClientApi =
+type ClientSourceApi =
     | SendChatSubstance of ChatSubstance
     | GetGameBoard
-    static member GetTopicNameWithApi(api: ClientApi) =
+    static member GetTopicNameWithApi(api: ClientSourceApi) =
         match api with
         | SendChatSubstance _ -> "sendChatSubstance"
         | GetGameBoard -> "getGameBoard"
-
     static member GetTopicName =
         {| SendChatSubstance = "sendChatSubstance"
            GetGameBoard = "getGameBoard" |}
+
+// type 

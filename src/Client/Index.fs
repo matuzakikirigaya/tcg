@@ -50,7 +50,7 @@ let init (): Model * Cmd<Msg> =
         { CurrentPage = TodoPage
           User = userName }
 
-    let webSocketModel, _ = webSocketinit ()
+    let webSocketModel, _ = webSocketinit userName
 
     ({ NavigatorModel = navigatorModel
        TodoModel = todoModel

@@ -3,6 +3,9 @@ module Client.Game.Field
 open Fable.React
 open Fable.React.Props
 
+// let GameModel =
+
+
 let view =
     div [] [
 

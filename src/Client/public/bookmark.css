@@ -13,6 +13,9 @@
     display: flex;
     flex-direction: row;
 }
+.substance_right {
+    text-align:right
+}
 .sub_title {
     background-color: LightGrey;
     color: rgb(23, 180, 194);

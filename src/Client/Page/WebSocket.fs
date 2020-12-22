@@ -26,7 +26,8 @@ open Fable.React
 type WebSocketModel =
     { ConnectionState: ConnectionState
       ReceivedSubstance: list<WebSocketSubstance>
-      SendingSubstance: WebSocketSubstance }
+      SendingSubstance: WebSocketSubstance
+      UserName: string }
     member This.Update(msg: WebSocketMsg): WebSocketModel * Cmd<WebSocketMsg> =
         match msg with
         | MSubmitSubstance ->
@@ -43,11 +44,10 @@ type WebSocketModel =
             Cmd.none
 
     member This.View(dispatch: WebSocketMsg -> unit): ReactElement =
-        div [] [
+        div [ Class "game" ] [
+            Client.Game.Field.view
+            hr []
             div [] [
-                div []
-                <| List.map (fun value -> div [] [ str value.substance ]) This.ReceivedSubstance
-
                 div [ ClassName "sub_title" ] [
                     (match This.ConnectionState with
                      | DisConnected -> str "dis"
@@ -55,20 +55,36 @@ type WebSocketModel =
                 ]
                 input [ OnChange
                             (fun ev ->
-                                MChangeSubstance { substance = (ev.Value) }
+                                MChangeSubstance
+                                    { This.SendingSubstance with
+                                          substance = (ev.Value)
+                                          userName = This.UserName }
                                 |> dispatch) ]
                 button [ OnMouseDown(fun ev -> dispatch MSubmitSubstance)
                          ClassName "msr_btn13" ] [
                     str "submit"
                 ]
+                div []
+                <| List.map
+                    (fun value ->
+                        div [] [
+                            str <| value.userName + ":"
+                            br []
+                            div [Class "substance_right"] [
+                                str value.substance
+                            ]
+                        ])
+                    This.ReceivedSubstance
             ]
-            Client.Game.Field.view
         ]
 
-let webSocketinit () =
+let webSocketinit initialUserName =
     { ConnectionState = DisConnected
-      ReceivedSubstance = [ { substance = "first" } ]
-      SendingSubstance = { substance = "" } },
+      ReceivedSubstance = []
+      SendingSubstance =
+          { substance = ""
+            userName = initialUserName }
+      UserName = initialUserName },
     Cmd.none
 
 open Browser.WebSocket
@@ -134,7 +150,5 @@ let subscription _ =
                     })
 
         connect ()
-
-    Cmd.ofSub sub
 
     Cmd.ofSub sub

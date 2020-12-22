@@ -40,7 +40,10 @@ type Model =
 
             { this with
                   LoginModel = soModel
-                  NavigatorModel = { this.NavigatorModel with User = user } },
+                  NavigatorModel = { this.NavigatorModel with User = user }
+                  WebSocketModel =
+                      { this.WebSocketModel with
+                            UserName = user } },
             siCmd
         | WebSocketMsg webSocketMsg ->
             let soModel, soCmd = this.WebSocketModel.Update webSocketMsg

@@ -61,12 +61,12 @@ type GameModel =
 
         let selfGraveyardView (selfGraveyardCard: list<GraveyardCard>) =
             div [ Class "Self_graveyard" ] [
-                str (string <| List.length selfGraveyardCard)
+                str <| "墓地:" + (string <| List.length selfGraveyardCard) + "枚"
             ]
 
         let selfDeckView (selfDeck: int) =
             div [ Class "Self_deck" ] [
-                str (string selfDeck)
+                str  <| "デッキ:" + (string selfDeck) + "枚"
             ]
 
         let selfLifeManaView (selfMana, selfLife) =

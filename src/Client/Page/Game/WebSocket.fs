@@ -4,6 +4,10 @@ open Shared.Model.WebSocket
 
 open Client.Game.Chat
 open Client.Game.Field
+open Elmish
+open Fable.React.Props
+open Fable.React
+open Client.Game.Field
 
 type ClientSender = ClientApi -> unit
 
@@ -25,11 +29,6 @@ type WebSocketMsg =
     | ChatMsg of ChatMsg
     | GameMsg of GameMsg
     | MConnect of ConnectionState
-
-open Elmish
-open Fable.React.Props
-open Fable.React
-open Client.Game.Field
 
 type WebSocketModel =
     { ConnectionState: ConnectionState
@@ -96,9 +95,7 @@ let buildClientSender (ws: WebSocket) clientapi =
         ws.send message
     | GetGameBoard ->
         let message =
-            {| Topic = ClientApi.GetTopicName.GetGameBoard
-               Ref = ""
-               Payload = {| hoge = 1 |} |}
+            {| Topic = ClientApi.GetTopicName.GetGameBoard |}
 
         let message =
             Thoth.Json.Encode.Auto.toString (0, message)

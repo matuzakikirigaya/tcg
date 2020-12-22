@@ -18,6 +18,7 @@ let inline decode<'a> x =
     x
     |> unbox<string>
     |> Thoth.Json.Decode.Auto.unsafeFromString<'a>
+
 let subscription _ =
     let sub (dispatch: WebSocketMsg -> unit) =
         /// Handles push messages from the server and relays them into Elmish messages.
@@ -26,13 +27,13 @@ let subscription _ =
                 msg.data
                 |> decode<{| payload: string; topic: string |}>
 
-            if msg.topic = ClientSourceApi.GetTopicName.SendChatSubstance then
+            if msg.topic = ClientSinkApi.GetTopicName.ReceivedChatSubstance then
                 msg.payload
                 |> decode<ChatSubstance>
                 |> MReceivedSubstance
                 |> ChatMsg
                 |> dispatch
-            else if msg.topic = ClientSourceApi.GetTopicName.GetGameBoard then
+            else if msg.topic = ClientSinkApi.GetTopicName.GotGameBoard then
                 msg.payload
                 |> decode<ClientBoard>
                 |> MGotBoard

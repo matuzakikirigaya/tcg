@@ -37,8 +37,6 @@ let channel =
         handle "" (fun ctx channelInfo message ->
             task {
                 let hub = ctx.GetService<Channels.ISocketHub>()
-                let hoge =    message.Payload
-                              |> string
                 let message =
                     message.Payload
                     |> string

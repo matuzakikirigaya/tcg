@@ -8,7 +8,7 @@ open Shared.Model.Game.Card
 type GameMsg = MGetBoard
 type GameModel = { ClientBoard: ClientBoard }
     // member this.Update msg = match msg with
-    // |MGetBoard -> 
+    // |MGetBoard ->
 
 let selfHandView (selfHand: list<HandCard>) =
     div [ Class "Self_hand" ] [

@@ -4,28 +4,28 @@ open Shared.Model.Game.Card
 open Shared.Model.Game.Turn
 
 type ServerPlayer =
-    { serverPlayerVanguard: list<VanguardCard>
-      serverPlayerRearguard: list<RearguardCard>
-      serverPlayerDeck: list<DeckCard>
-      serverPlayerGraveyard: list<GraveyardCard>
-      serverPlayerHand: list<HandCard>
+    { serverPlayerVanguard: Vanguard
+      serverPlayerRearguard: Vanguard
+      serverPlayerDeck: Deck
+      serverPlayerGraveyard: Graveyard
+      serverPlayerHand: Hand
       serverPlayerLife: int
       serverPlayerMana: int }
 
 type ClientSelfPlayer =
-    { selfVanguard: list<VanguardCard>
-      selfRearguard: list<RearguardCard>
+    { selfVanguard: Vanguard
+      selfRearguard: Rearguard
       selfDeck: int
-      selfGraveyard: list<GraveyardCard>
-      selfHand: list<HandCard>
+      selfGraveyard: Graveyard
+      selfHand: Hand
       selfLife: int
       selfMana: int }
 
 type ClientOpponentPlayer =
-    { opponentVanguard: list<VanguardCard>
-      opponentRearguard: list<RearguardCard>
+    { opponentVanguard: Vanguard
+      opponentRearguard: Rearguard
       opponentDeck: int
-      opponentGraveyard: list<GraveyardCard>
+      opponentGraveyard: Graveyard
       opponentHand: int
       opponentLife: int
       opponentMana: int }

@@ -8,6 +8,8 @@
     <None Include="paket.references" />
     <Compile Include="Game/GameCore/Dummy.fs" />
     <Compile Include="Game/GameCore/Program.fs" />
+    <!-- ここ、モデル、Elemental、プログラム、ハンドラ、websocketの順番にするべきじゃん -->
+    <Compile Include="Game/GameCore/Elemental/DrawDH.fs" />
     <Compile Include="Game/GameCore/WebSocket/WebSocket.fs" />
     <Compile Include="Jwt.fs" />
     <Compile Include="Auth.fs" />

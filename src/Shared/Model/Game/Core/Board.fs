@@ -5,7 +5,7 @@ open Shared.Model.Game.Turn
 
 type ServerPlayer =
     { serverPlayerVanguard: Vanguard
-      serverPlayerRearguard: Vanguard
+      serverPlayerRearguard: Rearguard
       serverPlayerDeck: Deck
       serverPlayerGraveyard: Graveyard
       serverPlayerHand: Hand

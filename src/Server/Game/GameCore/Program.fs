@@ -23,7 +23,7 @@ let update: GameUpdate =
             { board = board }, GameCmd.map Draw list
         | DevInit ->
             let board, cmd = Usecases.DevInit.devInitUpdate
-            { board = board }, []
+            { board = board }, cmd
 
 let program =
     GameProgram({ board = initialServerBoard }, update)

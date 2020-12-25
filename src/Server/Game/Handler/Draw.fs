@@ -24,7 +24,6 @@ let sendClientBoard1 (hub: Channels.ISocketHub) socketId (payload: ClientBoard) 
 
 let drawHandler (ctx: HttpContext) clientInfo (message: Message<obj>) =
     task {
-        printfn "hogehogehogeThis.GameSender()"
         let hub = ctx.GetService<Channels.ISocketHub>()
 
         let message =

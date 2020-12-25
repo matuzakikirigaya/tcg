@@ -7,7 +7,7 @@ open Shared.Model.Game.GameElmish
 
 let drawUpdate: ServerBoard * DrawProps -> ServerBoard * GameCmd<DrawProps> =
     fun (board, props) ->
-        let hoge =
+        let nextBoard =
             match board.serverPlayer1.serverPlayerDeck with
             | x :: xs ->
                 { board with
@@ -19,4 +19,4 @@ let drawUpdate: ServerBoard * DrawProps -> ServerBoard * GameCmd<DrawProps> =
                                     :: board.serverPlayer1.serverPlayerHand } }
             | _ -> board
 
-        hoge, []
+        nextBoard, []

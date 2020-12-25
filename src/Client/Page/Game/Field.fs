@@ -82,7 +82,7 @@ type GameModel =
                 <| "デッキ:" + (string selfDeck) + "枚" + playerName
             ]
 
-        let selfLifeManaView (selfMana, selfLife) =
+        let selfLifeManaView (selfLife, selfMana) =
             div [ Class "Self_mana" ] [
                 div [] [
                     div [] [
@@ -93,8 +93,75 @@ type GameModel =
                     ]
                 ]
             ]
+        let opponentVanguardView (selfVanguard: list<VanguardCard>) =
+            div [ Class "Self_vanGuard" ] [
+                div
+                    [ Class "Self_rearGuard_margin" ]
+                    (List.map
+                        (fun (card: VanguardCard) ->
+                            div [ Class "Self_vanGuard_element" ] [
+                                str <| card.name + "相手"
+                            ])
+                        selfVanguard)
+            ]
+
+        let opponentRearguardView (selfRearguard: list<RearguardCard>) =
+            div [ Class "Self_rearGuard" ] [
+                div
+                    [ Class "Self_rearGuard_margin" ]
+                    (List.map
+                        (fun (card: RearguardCard) ->
+                            div [ Class "Self_rearGuard_element" ] [
+                                str <| card.name + "相手"
+                            ])
+                        selfRearguard)
+            ]
+
+        let opponentGraveyardView (selfGraveyardCard: list<GraveyardCard>) =
+            div [ Class "Self_graveyard" ] [
+                str
+                <| "墓地:"
+                   + (string <| List.length selfGraveyardCard)
+                   + "枚"
+            ]
+
+
+        let opponentHandView (opponentHand: int) =
+            let cards =
+                let rec intToName x =
+                    if x > 0 then (string x) :: (intToName (x - 1)) else [] in intToName opponentHand
+
+            div [ Class "Self_hand" ] [
+                div
+                    [ Class "Self_hand_margin" ]
+                    (List.map
+                        (fun name ->
+                            div [ Class "Self_hand_element" ] [
+                                str name
+                            ])
+                        cards)
+            ]
+
+        let opponentDeckView (opponentDeck: int, playerName: string) =
+            div [ Class "Self_deck" ] [
+                str
+                <| "デッキ:" + (string opponentDeck) + "枚" + playerName
+            ]
+
+        let opponentLifeManaView (opponentLife, opponentMana) =
+            div [ Class "Opponent_mana" ] [
+                div [] [
+                    div [] [
+                        str <| "ライフ" + (string opponentLife)
+                    ]
+                    div [] [
+                        str <| "マナ" + (string opponentMana)
+                    ]
+                ]
+            ]
 
         let player = This.ClientBoard.clientSelfPlayer
+        let opponent = This.ClientBoard.clientOpponentPlayer
 
         div [] [
             div [] [
@@ -103,9 +170,21 @@ type GameModel =
                 ]
                 div [ Class "Self_board" ] [
                     div [ Class "Self_field" ] [
-                        selfHandView player.selfHand
+                        opponentHandView opponent.opponentHand
+                        opponentRearguardView opponent.opponentRearguard
+                        opponentVanguardView opponent.opponentVanguard
+                    ]
+                    div [ Class "Self_zone" ] [
+                        opponentGraveyardView opponent.opponentGraveyard
+                        opponentDeckView (opponent.opponentDeck, This.PlayerName)
+                        opponentLifeManaView (opponent.opponentLife, opponent.opponentMana)
+                    ]
+                ]
+                div [ Class "Self_board" ] [
+                    div [ Class "Self_field" ] [
                         selfVanguardView player.selfVanguard
                         selfRearguardView player.selfRearguard
+                        selfHandView player.selfHand
                     ]
                     div [ Class "Self_zone" ] [
                         selfGraveyardView player.selfGraveyard

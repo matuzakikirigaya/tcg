@@ -3,16 +3,13 @@ module Server.Game.Handler.SendChatSubstance
 open FSharp.Control.Tasks.V2
 
 open Saturn
-open FSharp.Control.Tasks.V2
 open Thoth.Json
 open Giraffe.Core
 
-open Microsoft.Extensions.Logging
 open Shared.Model.WebSocket
 open Thoth.Json.Net
 open Microsoft.AspNetCore.Http
 
-open Server.Game.Dummy
 let broadcastChatSubstance (hub: Channels.ISocketHub) (payload: ChatSubstance) =
     task {
         let payload = Encode.Auto.toString (0, payload)

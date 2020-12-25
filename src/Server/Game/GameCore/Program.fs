@@ -3,9 +3,6 @@ module Server.Game.Program
 open Shared.Model.Game.GameElmish
 open Shared.Model.Game.Board
 
-let initialServerBoard = Server.Game.Dummy.initialServerBoard
-
-
 type GameProgram(init: GameModel, update: GameUpdate) =
     let update = update
     let mutable innerModel = init
@@ -24,6 +21,9 @@ let update: GameUpdate =
                 Server.Game.Usecases.Draw.drawUpdate (model.board, draw)
 
             { board = board }, GameCmd.map Draw list
+        | DevInit ->
+            let board, cmd = Usecases.DevInit.devInitUpdate
+            { board = board }, []
 
 let program =
     GameProgram({ board = initialServerBoard }, update)

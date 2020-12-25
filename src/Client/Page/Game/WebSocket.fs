@@ -45,6 +45,7 @@ type WebSocketModel =
                           { This.GameModel with
                                 GameSender = sender << GameApi } },
                 Cmd.none
+            | _ -> This,Cmd.none
 
     member This.View(dispatch: WebSocketMsg -> unit): ReactElement =
         div [ Class "game" ] [

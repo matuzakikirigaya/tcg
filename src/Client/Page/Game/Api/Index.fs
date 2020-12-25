@@ -37,3 +37,12 @@ let buildClientSender (ws: WebSocket) clientapi =
                 Thoth.Json.Encode.Auto.toString (0, message)
 
             ws.send message
+
+        | DevInit -> // ここをGameのApiの部分に書き換えたい
+            let message =
+                {| Topic = ClientSourceApi.GetTopicName.DevInit|}
+
+            let message =
+                Thoth.Json.Encode.Auto.toString (0, message)
+
+            ws.send message

@@ -9,14 +9,15 @@ open Shared.Model.Game.ClientApi.Draw
 } *)
 type ChatSubstance = { substance: string; userName: string }
 
-type GameApi = GetGameBoard | Draw of DrawProps
+type GameApi = GetGameBoard | Draw of DrawProps | DevInit
 type ClientSourceApi =
     | SendChatSubstance of ChatSubstance
     | GameApi of GameApi
     static member GetTopicName =
         {| SendChatSubstance = "sendChatSubstance"
            Draw = "draw"
-           GetGameBoard = "getGameBoard" |}
+           GetGameBoard = "getGameBoard"
+           DevInit = "devInit" |}
 
 type ClientSinkApi =
     | ReceivedChatSubstance of ChatSubstance

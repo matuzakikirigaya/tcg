@@ -12,6 +12,7 @@ type GameMsg =
     | MGetBoard
     | MGotBoard of ClientBoard
     | MDraw of DrawProps
+    | MDevInit
 
 
 type GameSender = GameApi -> unit
@@ -28,6 +29,9 @@ type GameModel =
         | MGotBoard board -> { This with ClientBoard = board }, Cmd.none
         | MDraw props ->
             This.GameSender(Draw props)
+            This, Cmd.none
+        | MDevInit ->
+            This.GameSender(DevInit)
             This, Cmd.none
 
     member This.View(dispatch: GameMsg -> unit) =
@@ -93,6 +97,7 @@ type GameModel =
                     ]
                 ]
             ]
+
         let opponentVanguardView (selfVanguard: list<VanguardCard>) =
             div [ Class "Self_vanGuard" ] [
                 div
@@ -129,7 +134,9 @@ type GameModel =
         let opponentHandView (opponentHand: int) =
             let cards =
                 let rec intToName x =
-                    if x > 0 then (string x) :: (intToName (x - 1)) else [] in intToName opponentHand
+                    if x > 0 then (string x) :: (intToName (x - 1)) else [] in
+
+                intToName opponentHand
 
             div [ Class "Self_hand" ] [
                 div
@@ -167,6 +174,9 @@ type GameModel =
             div [] [
                 button [ OnClick(fun ev -> dispatch MGetBoard) ] [
                     str "getBoard"
+                ]
+                button [ OnClick(fun ev -> dispatch MDevInit) ] [
+                    str "devInit"
                 ]
                 div [ Class "Self_board" ] [
                     div [ Class "Self_field" ] [

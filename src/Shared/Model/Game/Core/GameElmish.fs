@@ -2,7 +2,7 @@ module Shared.Model.Game.GameElmish
 
 open Shared.Model.Game.Board
 
-type GameMsg = Draw of Shared.Model.Game.ClientApi.Draw.DrawProps
+type GameMsg = Draw of Shared.Model.Game.ClientApi.Draw.DrawProps | DevInit
 type GameDispatch<'Msg> = 'Msg -> unit
 type GameSub<'Msg> = GameDispatch<'Msg> -> unit
 type GameCmd<'Msg> = list<GameSub<'Msg>>

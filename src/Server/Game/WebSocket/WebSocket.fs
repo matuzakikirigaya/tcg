@@ -1,12 +1,8 @@
 module Server.WebSocket
 
-open Fable.Remoting.Server
-open Fable.Remoting.Giraffe
 open Saturn
 open FSharp.Control.Tasks.V2
-open System.IO
 open Thoth.Json
-open Giraffe.ModelBinding
 open Giraffe.Core
 
 open Microsoft.Extensions.Logging
@@ -21,11 +17,6 @@ let sendMessage (hub: Channels.ISocketHub) socketId (payload: ChatSubstance) =
         do! hub.SendMessageToClient "/channel" socketId "" payload
     }
 /// Sends a message to all connected clients.
-let broadcastChatSubstance (hub: Channels.ISocketHub) (payload: ChatSubstance) =
-    task {
-        let payload = Encode.Auto.toString (0, payload)
-        do! hub.SendMessageToClients "/channel" ClientSinkApi.GetTopicName.ReceivedChatSubstance payload
-    }
 
 open Shared.Model.Game.Board
 
@@ -35,6 +26,7 @@ let sendClientBoard (hub: Channels.ISocketHub) socketId (payload: ClientBoard) =
         do! hub.SendMessageToClient "/channel" socketId ClientSinkApi.GetTopicName.GotGameBoard payload
     }
 
+open Server.Game.Handler.SendChatSubstance
 /// Sets up the channel to listen to clients.
 let channel =
     channel {
@@ -48,20 +40,7 @@ let channel =
                     return Channels.Ok
                 })
 
-        handle
-            ClientSourceApi.GetTopicName.SendChatSubstance
-            (fun ctx channelInfo message ->
-                task {
-                    let hub = ctx.GetService<Channels.ISocketHub>()
-
-                    let message =
-                        message.Payload
-                        |> string
-                        |> Decode.Auto.unsafeFromString<ChatSubstance>
-
-                    // Here we handle any websocket client messages in a type-safe manner
-                    do! broadcastChatSubstance hub message
-                })
+        handle ClientSourceApi.GetTopicName.SendChatSubstance SendChatSubstanceHandler
 
         handle
             ClientSourceApi.GetTopicName.GetGameBoard

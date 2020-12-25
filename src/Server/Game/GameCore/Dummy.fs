@@ -64,7 +64,8 @@ let Player1: ServerPlayer =
             gobruiInHand 5
             gobruiInHand 6 ]
       serverPlayerLife = 30
-      serverPlayerMana = 0 }
+      serverPlayerMana = 0
+      serverPlayerName = "たけし" }
 
 let Player2: ServerPlayer =
     { serverPlayerVanguard =
@@ -99,7 +100,8 @@ let Player2: ServerPlayer =
             gobruiInHand 5
             gobruiInHand 6 ]
       serverPlayerLife = 30
-      serverPlayerMana = 0 }
+      serverPlayerMana = 0
+      serverPlayerName = "キリト" }
 
 let convertServerPlayerToClientSelfPlayer (serverPlayer: ServerPlayer): ClientSelfPlayer =
     { selfDeck = List.length serverPlayer.serverPlayerDeck

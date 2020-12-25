@@ -10,7 +10,8 @@ type ServerPlayer =
       serverPlayerGraveyard: Graveyard
       serverPlayerHand: Hand
       serverPlayerLife: int
-      serverPlayerMana: int }
+      serverPlayerMana: int
+      serverPlayerName: string }
 
 type ClientSelfPlayer =
     { selfVanguard: Vanguard
@@ -39,3 +40,15 @@ type ClientBoard =
     { clientSelfPlayer: ClientSelfPlayer
       clientOpponentPlayer: ClientOpponentPlayer
       clientTurn: Turn }
+
+let chiralBoard (board: ServerBoard): ServerBoard =
+    { board with
+          serverPlayer1 = board.serverPlayer2
+          serverPlayer2 = board.serverPlayer1 }
+
+let chiralBoardOrNot (board: ServerBoard, name: string) =
+    if board.serverPlayer1.serverPlayerName = name
+    then board, id
+    else if board.serverPlayer2.serverPlayerName = name
+    then chiralBoard board, chiralBoard
+    else raise (System.ArgumentException("Divisor cannot be zero!"))

@@ -7,16 +7,19 @@ open Shared.Model.Game.GameElmish
 
 let drawUpdate: ServerBoard * DrawProps -> ServerBoard * GameCmd<DrawProps> =
     fun (board, props) ->
+        let board1, undoFun =
+            chiralBoardOrNot (board, props.playerName)
+
         let nextBoard =
-            match board.serverPlayer1.serverPlayerDeck with
+            match board1.serverPlayer1.serverPlayerDeck with
             | x :: xs ->
-                { board with
+                { board1 with
                       serverPlayer1 =
-                          { board.serverPlayer1 with
+                          { board1.serverPlayer1 with
                                 serverPlayerDeck = xs
                                 serverPlayerHand =
                                     (CardModule.DCtoHC x)
-                                    :: board.serverPlayer1.serverPlayerHand } }
-            | _ -> board
+                                    :: board1.serverPlayer1.serverPlayerHand } }
+            | _ -> board1
 
-        nextBoard, []
+        undoFun nextBoard, []

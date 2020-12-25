@@ -45,7 +45,9 @@ type Model =
                       { this.WebSocketModel with
                             ChatModel =
                                 { this.WebSocketModel.ChatModel with
-                                      UserName = user } } },
+                                      UserName = user }
+                            GameModel = {this.WebSocketModel.GameModel with PlayerName = user} }
+                   },
             siCmd
         | WebSocketMsg webSocketMsg ->
             let soModel, soCmd = this.WebSocketModel.Update webSocketMsg

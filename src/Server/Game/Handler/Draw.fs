@@ -1,4 +1,4 @@
-module Server.Game.Handler.SendClientBoard
+module Server.Game.Handler.Draw
 
 open FSharp.Control.Tasks.V2
 
@@ -14,6 +14,7 @@ open Server.Game.Dummy
 open Server.Game.Program
 
 open Shared.Model.Game.Board
+open Shared.Model.Game.ClientApi.Draw
 
 let sendClientBoard1 (hub: Channels.ISocketHub) socketId (payload: ClientBoard) =
     task {
@@ -21,9 +22,17 @@ let sendClientBoard1 (hub: Channels.ISocketHub) socketId (payload: ClientBoard) 
         do! hub.SendMessageToClient "/channel" socketId ClientSinkApi.GetTopicName.GotGameBoard payload
     }
 
-let sendClientBoard (ctx: HttpContext) clientInfo (message: Message<obj>) =
+let drawHandler (ctx: HttpContext) clientInfo (message: Message<obj>) =
     task {
+        printfn "hogehogehogeThis.GameSender()"
         let hub = ctx.GetService<Channels.ISocketHub>()
+
+        let message =
+            message.Payload
+            |> string
+            |> Decode.Auto.unsafeFromString<DrawProps>
+
+        program.dispatch (Shared.Model.Game.GameElmish.Draw message)
 
         let m =
             covertServerBoardIntoClientBoardFor1 program.getModel.board

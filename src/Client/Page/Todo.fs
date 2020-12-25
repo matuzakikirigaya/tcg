@@ -41,6 +41,7 @@ type TodoModel =
 
 
 let todoUpdate (msg: TodoMsg) (todoModel: TodoModel): TodoModel * Cmd<TodoMsg> = todoModel.Update msg
+
 open Fable.React
 open Fable.React.Props
 
@@ -48,7 +49,9 @@ type TodoProps =
     { TodoModel: TodoModel
       TodoDispatch: TodoMsg -> Unit }
 
-let containerBox { TodoModel = todoModel; TodoDispatch = todoDispatch } =
+let containerBox { TodoModel = todoModel
+                   TodoDispatch = todoDispatch }
+                 =
     div [] [
         div [] [
             ol [] [

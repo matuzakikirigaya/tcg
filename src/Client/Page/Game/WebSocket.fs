@@ -15,15 +15,6 @@ type ConnectionState =
     | DisConnected
     | Connected of ClientSender
     | Connecting
-    member this.SendChatSubsatnce sub =
-        match this with
-        | Connected sender -> sender <| SendChatSubstance sub
-        | _ -> ()
-
-    member this.GetGameBoard() =
-        match this with
-        | Connected sender -> sender GetGameBoard
-        | _ -> ()
 
 type WebSocketMsg =
     | ChatMsg of ChatMsg
@@ -43,15 +34,17 @@ type WebSocketModel =
             let (gameModel, gameCmd) = This.GameModel.Update gamemsg
             { This with GameModel = gameModel }, Cmd.map GameMsg gameCmd
         | MConnect connection ->
-            { This with
-                  ConnectionState = connection
-                  ChatModel =
-                      { This.ChatModel with
-                            ChatSender = connection.SendChatSubsatnce }
-                  GameModel =
-                      { This.GameModel with
-                            GameSender = connection.GetGameBoard } },
-            Cmd.none
+            match connection with
+            | Connected sender ->
+                { This with
+                      ConnectionState = connection
+                      ChatModel =
+                          { This.ChatModel with
+                                ChatSender = sender << SendChatSubstance }
+                      GameModel =
+                          { This.GameModel with
+                                GameSender = sender << GameApi } },
+                Cmd.none
 
     member This.View(dispatch: WebSocketMsg -> unit): ReactElement =
         div [ Class "game" ] [

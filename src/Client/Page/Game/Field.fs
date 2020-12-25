@@ -5,24 +5,32 @@ open Fable.React.Props
 open Shared.Model.Game.Board
 open Shared.Model.Game.Card
 open Elmish
+open Shared.Model.Game.ClientApi.Draw
+open Shared.Model.WebSocket
 
 type GameMsg =
     | MGetBoard
     | MGotBoard of ClientBoard
+    | MDraw of DrawProps
 
-type GameSender = unit -> unit
+
+type GameSender = GameApi -> unit
 
 type GameModel =
     { ClientBoard: ClientBoard
+      PlayerName: string
       GameSender: GameSender }
     member This.Update(msg: GameMsg): GameModel * Cmd<GameMsg> =
         match msg with
         | MGetBoard ->
-            This.GameSender()
+            This.GameSender(GetGameBoard)
             This, Cmd.none
         | MGotBoard board -> { This with ClientBoard = board }, Cmd.none
+        | MDraw props ->
+            This.GameSender(Draw props)
+            This, Cmd.none
 
-    member This.View (dispatch: GameMsg -> unit) =
+    member This.View(dispatch: GameMsg -> unit) =
         let selfHandView (selfHand: list<HandCard>) =
             div [ Class "Self_hand" ] [
                 div
@@ -61,12 +69,17 @@ type GameModel =
 
         let selfGraveyardView (selfGraveyardCard: list<GraveyardCard>) =
             div [ Class "Self_graveyard" ] [
-                str <| "墓地:" + (string <| List.length selfGraveyardCard) + "枚"
+                str
+                <| "墓地:"
+                   + (string <| List.length selfGraveyardCard)
+                   + "枚"
             ]
 
-        let selfDeckView (selfDeck: int) =
-            div [ Class "Self_deck" ] [
-                str  <| "デッキ:" + (string selfDeck) + "枚"
+        let selfDeckView (selfDeck: int, playerName: string) =
+            div [ Class "Self_deck"
+                  OnClick(fun a -> dispatch (MDraw { playerName = playerName })) ] [
+                str
+                <| "デッキ:" + (string selfDeck) + "枚" + playerName
             ]
 
         let selfLifeManaView (selfMana, selfLife) =
@@ -96,7 +109,7 @@ type GameModel =
                     ]
                     div [ Class "Self_zone" ] [
                         selfGraveyardView player.selfGraveyard
-                        selfDeckView player.selfDeck
+                        selfDeckView (player.selfDeck, This.PlayerName)
                         selfLifeManaView (player.selfLife, player.selfMana)
                     ]
                 ]
@@ -124,4 +137,5 @@ let gameModelInit: GameModel =
                   opponentRearguard = []
                   opponentVanguard = [] }
             clientTurn = Shared.Model.Game.Turn.End }
-      GameSender = fun () -> () }
+      PlayerName = ""
+      GameSender = fun a -> () }

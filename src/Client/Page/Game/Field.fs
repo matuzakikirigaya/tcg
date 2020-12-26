@@ -158,12 +158,12 @@ type GameModel =
             div [ Class "Opponent_mana" ] [
                 div [] [
                     div [] [
-                        str <| "ライフ" + (string opponentLife)
+                        str <| "ライフ:" + (string opponentLife)
                     ]
                     div [] [
-                        str <| "マナ" + (string opponentMana)
+                        str <| "マナ:" + (string opponentMana)
                     ]
-                    div [] [ str <| "プレイヤー" + playerName ]
+                    div [] [ str <| "プレイヤー:" + playerName ]
                 ]
             ]
 

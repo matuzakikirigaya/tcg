@@ -1,7 +1,7 @@
 module Server.Game.Program
 
 open Shared.Model.Game.GameElmish
-open Shared.Model.Game.Board
+open Shared.Model.Game.Dummy
 
 type GameProgram(init: GameModel, update: GameUpdate) =
     let update = update

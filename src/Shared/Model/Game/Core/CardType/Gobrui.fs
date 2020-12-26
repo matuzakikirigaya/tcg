@@ -1,0 +1,1 @@
+module Shared.Model.Game.CardType.Gobrui

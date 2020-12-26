@@ -2,6 +2,7 @@ module Shared.Model.Game.Board
 
 open Shared.Model.Game.Card
 open Shared.Model.Game.Turn
+open System
 
 type ServerPlayer =
     { serverPlayerVanguard: Vanguard
@@ -11,7 +12,8 @@ type ServerPlayer =
       serverPlayerHand: Hand
       serverPlayerLife: int
       serverPlayerMana: int
-      serverPlayerName: string }
+      serverPlayerName: string
+      serverPlayerSocketId: Option<Guid> }
 
 type ClientSelfPlayer =
     { selfVanguard: Vanguard

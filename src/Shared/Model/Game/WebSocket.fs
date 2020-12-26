@@ -3,13 +3,13 @@ module Shared.Model.WebSocket
 open Shared.Model.Game.Board
 open System
 
-open Shared.Model.Game.ClientApi.Draw
+open Shared.Model.Game.ClientApi.SimplyName
 (* type WebSocketUnadapted = {
     communicationType:string
 } *)
 type ChatSubstance = { substance: string; userName: string }
 
-type GameApi = GetGameBoard | Draw of DrawProps | DevInit
+type GameApi = GetGameBoard of SimplyName| Draw of SimplyName | DevInit of SimplyName
 type ClientSourceApi =
     | SendChatSubstance of ChatSubstance
     | GameApi of GameApi

@@ -10,23 +10,35 @@ open Shared.Model.WebSocket
 open Thoth.Json.Net
 open Microsoft.AspNetCore.Http
 open Channels
-open Server.Game.Dummy
 open Server.Game.Program
+open Shared.Model.Game.ClientApi.SimplyName
+open Shared.Model.Game.Util.BoardUtil
 
 open Shared.Model.Game.Board
-
-let sendClientBoard1 (hub: Channels.ISocketHub) socketId (payload: ClientBoard) =
-    task {
-        let payload = Encode.Auto.toString (0, payload)
-        do! hub.SendMessageToClient "/channel" socketId ClientSinkApi.GetTopicName.GotGameBoard payload
-    }
+open Server.Game.Handler.SendClientBoardi
 
 let sendClientBoard (ctx: HttpContext) clientInfo (message: Message<obj>) =
     task {
         let hub = ctx.GetService<Channels.ISocketHub>()
 
-        let m =
-            covertServerBoardIntoClientBoardFor1 program.getModel.board
+        let message =
+            message.Payload
+            |> string
+            |> Decode.Auto.unsafeFromString<SimplyName>
+
+        program.dispatch (
+            Shared.Model.Game.GameElmish.SGetGameBoard
+                { playerName = message.playerName
+                  socketId = clientInfo.SocketId }
+        )
+
+        let board = program.getModel.board
+        printfn "hoge%A" board.serverPlayer1.serverPlayerSocketId
+        printfn "fuga%A" board.serverPlayer2.serverPlayerSocketId
+
+        let m1 =
+            soroeruServerBoardByName message.playerName board
         // Here we handle any websocket client messages in a type-safe manner
-        do! sendClientBoard1 hub clientInfo.SocketId m
+        match board.serverPlayer2.serverPlayerSocketId, board.serverPlayer2.serverPlayerSocketId with
+        | Some id1, Some id2 -> do! sendClientBoard2 hub m1
     }

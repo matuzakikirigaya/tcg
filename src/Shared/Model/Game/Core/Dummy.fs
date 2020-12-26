@@ -65,7 +65,8 @@ let Player1: ServerPlayer =
             gobruiInHand 6 ]
       serverPlayerLife = 60
       serverPlayerMana = 30
-      serverPlayerName = "たけし" }
+      serverPlayerName = "たけし"
+      serverPlayerSocketId = None }
 
 let Player2: ServerPlayer =
     { serverPlayerVanguard =
@@ -101,7 +102,8 @@ let Player2: ServerPlayer =
             gobruiInHand 6 ]
       serverPlayerLife = 50
       serverPlayerMana = 20
-      serverPlayerName = "キリト" }
+      serverPlayerName = "キリト"
+      serverPlayerSocketId = None }
 
 let initialServerBoard: ServerBoard =
     { serverPlayer1 = Player1

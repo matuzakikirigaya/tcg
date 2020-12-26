@@ -8,10 +8,11 @@
     <None Include="paket.references" />
     <Compile Include="Game/Elemental/Draw.fs" />
     <Compile Include="Game/Usecases/Draw.fs" />
+    <Compile Include="Game/Usecases/SGetGameBoard.fs" />
     <Compile Include="Game/Usecases/DevInit.fs" />
-    <Compile Include="Game/GameCore/Dummy.fs" />
     <Compile Include="Game/GameCore/Program.fs" />
     <!-- ここ、モデル、Elemental、プログラム、ハンドラ、websocketの順番にするべきじゃん -->
+    <Compile Include="Game/Handler/SendClientBoard.fs" />
     <Compile Include="Game/Handler/SendChatSubstance.fs" />
     <Compile Include="Game/Handler/JoinWebSocket.fs" />
     <Compile Include="Game/Handler/GetClientBoard.fs" />

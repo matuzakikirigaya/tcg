@@ -9,12 +9,6 @@ open Microsoft.Extensions.Logging
 open Shared.Model.WebSocket
 open Thoth.Json.Net
 
-let sendMessage (hub: Channels.ISocketHub) socketId (payload: ChatSubstance) =
-    task {
-        let payload = Encode.Auto.toString (0, payload)
-        do! hub.SendMessageToClient "/channel" socketId "" payload
-    }
-
 let joinWebSocket (ctx: HttpContext) (socketId: Channels.ClientInfo) =
     task {
         ctx

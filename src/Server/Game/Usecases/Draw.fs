@@ -1,11 +1,11 @@
 module Server.Game.Usecases.Draw
 
-open Shared.Model.Game.ClientApi.Draw
+open Shared.Model.Game.ClientApi.SimplyName
 open Shared.Model.Game.Board
 open Shared.Model.Game.Card
 open Shared.Model.Game.GameElmish
 
-let drawUpdate: ServerBoard * DrawProps -> ServerBoard * GameCmd<DrawProps> =
+let drawUpdate: ServerBoard * SimplyName -> ServerBoard * GameCmd<SimplyName> =
     fun (board, props) ->
         let board1, undoFun =
             chiralBoardOrNot (board, props.playerName)

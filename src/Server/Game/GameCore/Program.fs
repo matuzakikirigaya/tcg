@@ -24,6 +24,15 @@ let update: GameUpdate =
         | DevInit ->
             let board, cmd = Usecases.DevInit.devInitUpdate
             { board = board }, cmd
+        | SGetGameBoard hoge ->
+            let board, cmd =
+                Usecases.SGetGameBoard.sGetGameBoard (
+                    model.board,
+                    { socketId = hoge.socketId
+                      playerName = hoge.playerName }
+                )
+
+            { board = board }, GameCmd.map SGetGameBoard cmd
 
 let program =
     GameProgram({ board = initialServerBoard }, update)

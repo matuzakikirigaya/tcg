@@ -20,9 +20,11 @@ let buildClientSender (ws: WebSocket) clientapi =
         ws.send message
     | GameApi api ->
         match api with
-        | GetGameBoard -> // ここをGameのApiの部分に書き換えたい
+        | GetGameBoard props -> // ここをGameのApiの部分に書き換えたい
             let message =
-                {| Topic = ClientSourceApi.GetTopicName.GetGameBoard |}
+                {| Topic = ClientSourceApi.GetTopicName.GetGameBoard
+                   Ref = ""
+                   Payload = props |}
 
             let message =
                 Thoth.Json.Encode.Auto.toString (0, message)
@@ -31,6 +33,7 @@ let buildClientSender (ws: WebSocket) clientapi =
         | Draw props -> // ここをGameのApiの部分に書き換えたい
             let message =
                 {| Topic = ClientSourceApi.GetTopicName.Draw
+                   Ref = ""
                    Payload = props |}
 
             let message =
@@ -38,9 +41,11 @@ let buildClientSender (ws: WebSocket) clientapi =
 
             ws.send message
 
-        | DevInit -> // ここをGameのApiの部分に書き換えたい
+        | DevInit props -> // ここをGameのApiの部分に書き換えたい
             let message =
-                {| Topic = ClientSourceApi.GetTopicName.DevInit|}
+                {| Topic = ClientSourceApi.GetTopicName.DevInit
+                   Ref = ""
+                   Payload = props |}
 
             let message =
                 Thoth.Json.Encode.Auto.toString (0, message)

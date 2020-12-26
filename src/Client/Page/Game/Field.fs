@@ -5,15 +5,14 @@ open Fable.React.Props
 open Shared.Model.Game.Board
 open Shared.Model.Game.Card
 open Elmish
-open Shared.Model.Game.ClientApi.Draw
 open Shared.Model.WebSocket
+open Shared.Model.Game.ClientApi.SimplyName
 
 type GameMsg =
     | MGetBoard
     | MGotBoard of ClientBoard
-    | MDraw of DrawProps
+    | MDraw
     | MDevInit
-
 
 type GameSender = GameApi -> unit
 
@@ -24,14 +23,14 @@ type GameModel =
     member This.Update(msg: GameMsg): GameModel * Cmd<GameMsg> =
         match msg with
         | MGetBoard ->
-            This.GameSender(GetGameBoard)
+            This.GameSender(GetGameBoard { playerName = This.PlayerName })
             This, Cmd.none
         | MGotBoard board -> { This with ClientBoard = board }, Cmd.none
-        | MDraw props ->
-            This.GameSender(Draw props)
+        | MDraw ->
+            This.GameSender(Draw { playerName = This.PlayerName })
             This, Cmd.none
         | MDevInit ->
-            This.GameSender(DevInit)
+            This.GameSender(DevInit { playerName = This.PlayerName })
             This, Cmd.none
 
     member This.View(dispatch: GameMsg -> unit) =
@@ -79,9 +78,9 @@ type GameModel =
                    + "枚"
             ]
 
-        let selfDeckView (selfDeck: int, playerName: string) =
+        let selfDeckView (selfDeck: int) =
             div [ Class "Self_deck"
-                  OnClick(fun a -> dispatch (MDraw { playerName = playerName })) ] [
+                  OnClick(fun a -> dispatch (MDraw )) ] [
                 str <| "デッキ:" + (string selfDeck) + "枚"
             ]
 
@@ -198,7 +197,7 @@ type GameModel =
                     ]
                     div [ Class "Self_zone" ] [
                         selfGraveyardView player.selfGraveyard
-                        selfDeckView (player.selfDeck, This.PlayerName)
+                        selfDeckView (player.selfDeck)
                         selfLifeManaView (player.selfLife, player.selfMana, player.selfName)
                     ]
                 ]

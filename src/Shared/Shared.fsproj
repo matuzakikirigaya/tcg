@@ -10,9 +10,10 @@
     <Compile Include="Model/Game/Core/Card.fs" />
     <Compile Include="Model/Game/Core/Board.fs" />
     <Compile Include="Model/Game/Core/CardType/Gobrui.fs" />
-    <Compile Include="Model/Game/ClientApi/Draw.fs" />
+    <Compile Include="Model/Game/ClientApi/SimplyName.fs" />
     <Compile Include="Model/Game/Core/Dummy.fs" />
     <Compile Include="Model/Game/Core/GameElmish.fs" />
+    <Compile Include="Model/Game/Util/BoardUtil.fs" />
     <Compile Include="Model/Game/WebSocket.fs" />
     <Compile Include="Shared.fs" />
   </ItemGroup>

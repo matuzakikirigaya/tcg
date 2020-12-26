@@ -19,12 +19,10 @@ let SendChatSubstanceHandler =
     (fun (ctx: HttpContext) (channelInfo: Channels.ClientInfo) (message: Channels.Message<obj>) ->
         task {
             let hub = ctx.GetService<Channels.ISocketHub>()
-
             let message =
                 message.Payload
                 |> string
                 |> Decode.Auto.unsafeFromString<ChatSubstance>
-
             // Here we handle any websocket client messages in a type-safe manner
             do! broadcastChatSubstance hub message
         })

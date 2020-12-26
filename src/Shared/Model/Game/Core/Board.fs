@@ -20,7 +20,8 @@ type ClientSelfPlayer =
       selfGraveyard: Graveyard
       selfHand: Hand
       selfLife: int
-      selfMana: int }
+      selfMana: int
+      selfName: string }
 
 type ClientOpponentPlayer =
     { opponentVanguard: Vanguard
@@ -29,7 +30,8 @@ type ClientOpponentPlayer =
       opponentGraveyard: Graveyard
       opponentHand: int
       opponentLife: int
-      opponentMana: int }
+      opponentMana: int
+      opponentName: string }
 
 type ServerBoard =
     { serverPlayer1: ServerPlayer
@@ -144,6 +146,7 @@ let initialServerBoard: ServerBoard =
     { serverPlayer1 = Player1
       serverPlayer2 = Player2
       serverTurn = Standby }
+
 let chiralBoard (board: ServerBoard): ServerBoard =
     { board with
           serverPlayer1 = board.serverPlayer2

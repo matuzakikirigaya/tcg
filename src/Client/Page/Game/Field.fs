@@ -82,19 +82,19 @@ type GameModel =
         let selfDeckView (selfDeck: int, playerName: string) =
             div [ Class "Self_deck"
                   OnClick(fun a -> dispatch (MDraw { playerName = playerName })) ] [
-                str
-                <| "デッキ:" + (string selfDeck) + "枚" + playerName
+                str <| "デッキ:" + (string selfDeck) + "枚"
             ]
 
-        let selfLifeManaView (selfLife, selfMana) =
+        let selfLifeManaView (selfLife, selfMana, playerName) =
             div [ Class "Self_mana" ] [
                 div [] [
                     div [] [
-                        str <| "ライフ" + (string selfLife)
+                        str <| "ライフ:" + (string selfLife)
                     ]
                     div [] [
-                        str <| "マナ" + (string selfMana)
+                        str <| "マナ:" + (string selfMana)
                     ]
+                    div [] [ str <| "プレイヤー:" + playerName ]
                 ]
             ]
 
@@ -149,13 +149,12 @@ type GameModel =
                         cards)
             ]
 
-        let opponentDeckView (opponentDeck: int, playerName: string) =
+        let opponentDeckView (opponentDeck: int) =
             div [ Class "Self_deck" ] [
-                str
-                <| "デッキ:" + (string opponentDeck) + "枚" + playerName
+                str <| "デッキ:" + (string opponentDeck) + "枚"
             ]
 
-        let opponentLifeManaView (opponentLife, opponentMana) =
+        let opponentLifeManaView (opponentLife, opponentMana, playerName) =
             div [ Class "Opponent_mana" ] [
                 div [] [
                     div [] [
@@ -164,6 +163,7 @@ type GameModel =
                     div [] [
                         str <| "マナ" + (string opponentMana)
                     ]
+                    div [] [ str <| "プレイヤー" + playerName ]
                 ]
             ]
 
@@ -186,8 +186,8 @@ type GameModel =
                     ]
                     div [ Class "Self_zone" ] [
                         opponentGraveyardView opponent.opponentGraveyard
-                        opponentDeckView (opponent.opponentDeck, This.PlayerName)
-                        opponentLifeManaView (opponent.opponentLife, opponent.opponentMana)
+                        opponentDeckView (opponent.opponentDeck)
+                        opponentLifeManaView (opponent.opponentLife, opponent.opponentMana, opponent.opponentName)
                     ]
                 ]
                 div [ Class "Self_board" ] [
@@ -199,7 +199,7 @@ type GameModel =
                     div [ Class "Self_zone" ] [
                         selfGraveyardView player.selfGraveyard
                         selfDeckView (player.selfDeck, This.PlayerName)
-                        selfLifeManaView (player.selfLife, player.selfMana)
+                        selfLifeManaView (player.selfLife, player.selfMana, player.selfName)
                     ]
                 ]
             ]
@@ -216,6 +216,7 @@ let gameModelInit: GameModel =
                   selfLife = 0
                   selfGraveyard = []
                   selfRearguard = []
+                  selfName = ""
                   selfVanguard = [] }
             clientOpponentPlayer =
                 { opponentDeck = 0
@@ -224,6 +225,7 @@ let gameModelInit: GameModel =
                   opponentLife = 0
                   opponentGraveyard = []
                   opponentRearguard = []
+                  opponentName = ""
                   opponentVanguard = [] }
             clientTurn = Shared.Model.Game.Turn.End }
       PlayerName = ""

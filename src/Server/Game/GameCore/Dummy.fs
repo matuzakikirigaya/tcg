@@ -12,7 +12,8 @@ let convertServerPlayerToClientSelfPlayer (serverPlayer: ServerPlayer): ClientSe
       selfVanguard = serverPlayer.serverPlayerVanguard
       selfRearguard = serverPlayer.serverPlayerRearguard
       selfGraveyard = serverPlayer.serverPlayerGraveyard
-      selfLife = serverPlayer.serverPlayerLife }
+      selfLife = serverPlayer.serverPlayerLife
+      selfName = serverPlayer.serverPlayerName }
 
 let convertServerPlayerToClientOpponentPlayer (serverPlayer: ServerPlayer): ClientOpponentPlayer =
     { opponentDeck = List.length serverPlayer.serverPlayerDeck
@@ -21,7 +22,8 @@ let convertServerPlayerToClientOpponentPlayer (serverPlayer: ServerPlayer): Clie
       opponentVanguard = serverPlayer.serverPlayerVanguard
       opponentRearguard = serverPlayer.serverPlayerRearguard
       opponentGraveyard = serverPlayer.serverPlayerGraveyard
-      opponentLife = serverPlayer.serverPlayerLife }
+      opponentLife = serverPlayer.serverPlayerLife
+      opponentName = serverPlayer.serverPlayerName }
 
 let covertServerBoardIntoClientBoardFor1 (board: ServerBoard): ClientBoard =
     { clientSelfPlayer = convertServerPlayerToClientSelfPlayer board.serverPlayer1

@@ -15,6 +15,7 @@ open LocalStorage
 open System
 
 open Client.Game.WebSocket
+
 let init (): Model * Cmd<Msg> =
     let todoModel = { Todos = []; Input = "" }
 
@@ -53,7 +54,11 @@ let init (): Model * Cmd<Msg> =
     ({ NavigatorModel = navigatorModel
        TodoModel = todoModel
        LoginModel = loginModel
-       WebSocketModel = webSocketModel
+       WebSocketModel =
+           { webSocketModel with
+                 GameModel =
+                     { webSocketModel.GameModel with
+                           PlayerName = userName } }
        CurrentPage = TodoPage }),
     cmd
 

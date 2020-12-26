@@ -102,8 +102,8 @@ let Player1: ServerPlayer =
             gobruiInHand 4
             gobruiInHand 5
             gobruiInHand 6 ]
-      serverPlayerLife = 30
-      serverPlayerMana = 0
+      serverPlayerLife = 60
+      serverPlayerMana = 30
       serverPlayerName = "たけし" }
 
 let Player2: ServerPlayer =
@@ -138,8 +138,8 @@ let Player2: ServerPlayer =
             gobruiInHand 4
             gobruiInHand 5
             gobruiInHand 6 ]
-      serverPlayerLife = 30
-      serverPlayerMana = 0
+      serverPlayerLife = 50
+      serverPlayerMana = 20
       serverPlayerName = "キリト" }
 
 let initialServerBoard: ServerBoard =

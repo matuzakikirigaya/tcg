@@ -23,6 +23,7 @@ let sendClientBoard2 (hub: Channels.ISocketHub) (serverBoard: ServerBoard) =
 
         let s2 =
             serverBoard.serverPlayer2.serverPlayerSocketId
+        printfn "hogehoge%A%A" s1 s2
 
         match s1, s2 with
         | Some s1, Some s2 ->

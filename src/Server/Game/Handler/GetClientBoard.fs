@@ -25,7 +25,6 @@ let sendClientBoard (ctx: HttpContext) clientInfo (message: Message<obj>) =
             message.Payload
             |> string
             |> Decode.Auto.unsafeFromString<SimplyName>
-
         program.dispatch (
             Shared.Model.Game.GameElmish.SGetGameBoard
                 { playerName = message.playerName
@@ -33,12 +32,8 @@ let sendClientBoard (ctx: HttpContext) clientInfo (message: Message<obj>) =
         )
 
         let board = program.getModel.board
-        printfn "hoge%A" board.serverPlayer1.serverPlayerSocketId
-        printfn "fuga%A" board.serverPlayer2.serverPlayerSocketId
-
         let m1 =
             soroeruServerBoardByName message.playerName board
         // Here we handle any websocket client messages in a type-safe manner
-        match board.serverPlayer2.serverPlayerSocketId, board.serverPlayer2.serverPlayerSocketId with
-        | Some id1, Some id2 -> do! sendClientBoard2 hub m1
+        sendClientBoard2 hub m1
     }

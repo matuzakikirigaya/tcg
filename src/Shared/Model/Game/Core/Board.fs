@@ -14,6 +14,27 @@ type ServerPlayer =
       serverPlayerMana: int
       serverPlayerName: string
       serverPlayerSocketId: Option<Guid> }
+    static member newPlayer(name) =
+        let godTakeshiInDeck i: DeckCard =
+            { name = "takeshi"
+              id = i
+              cardType =
+                  VanguardType
+                      { VanguardAttackPoint = 1
+                        VanguardDefencePoint = 1 } }
+
+        let rec duplicate (a: int) (card: DeckCard) =
+            if (a > 0) then card :: (duplicate (a - 1) card) else []
+
+        { serverPlayerVanguard = []
+          serverPlayerRearguard = []
+          serverPlayerDeck = duplicate 60 (godTakeshiInDeck 1)
+          serverPlayerGraveyard = []
+          serverPlayerHand = []
+          serverPlayerLife = 80
+          serverPlayerMana = 10
+          serverPlayerName = name
+          serverPlayerSocketId = None }
 
 type ClientSelfPlayer =
     { selfVanguard: Vanguard
@@ -38,7 +59,13 @@ type ClientOpponentPlayer =
 type ServerBoard =
     { serverPlayer1: ServerPlayer
       serverPlayer2: ServerPlayer
-      serverTurn: Turn }
+      serverTurn: Turn
+      roomNumber: Guid }
+    static member newBoard(name1, name2) =
+        { serverPlayer1 = ServerPlayer.newPlayer (name1)
+          serverPlayer2 = ServerPlayer.newPlayer (name2)
+          serverTurn = Standby
+          roomNumber = new Guid() }
 
 type ClientBoard =
     { clientSelfPlayer: ClientSelfPlayer
@@ -51,6 +78,7 @@ let chiralBoard (board: ServerBoard): ServerBoard =
           serverPlayer2 = board.serverPlayer1 }
 
 let chiralBoardOrNot (board: ServerBoard, name: string) =
+    printfn "%s" name
     if board.serverPlayer1.serverPlayerName = name
     then board, id
     else if board.serverPlayer2.serverPlayerName = name

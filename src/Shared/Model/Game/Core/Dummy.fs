@@ -105,7 +105,10 @@ let Player2: ServerPlayer =
       serverPlayerName = "キリト"
       serverPlayerSocketId = None }
 
+open System
+
 let initialServerBoard: ServerBoard =
     { serverPlayer1 = Player1
       serverPlayer2 = Player2
-      serverTurn = Standby }
+      serverTurn = Standby
+      roomNumber = new Guid() }

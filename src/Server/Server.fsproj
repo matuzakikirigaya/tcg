@@ -11,6 +11,7 @@
     <Compile Include="Game/Usecases/SGetGameBoard.fs" />
     <Compile Include="Game/Usecases/DevInit.fs" />
     <Compile Include="Game/GameCore/Program.fs" />
+    <Compile Include="Game/GameCore/Room.fs" />
     <!-- ここ、モデル、Elemental、プログラム、ハンドラ、websocketの順番にするべきじゃん -->
     <Compile Include="Game/Handler/SendClientBoard.fs" />
     <Compile Include="Game/Handler/SendChatSubstance.fs" />

@@ -12,18 +12,18 @@ open Shared.Model.Game.Board
 let sendClientBoard2 (hub: Channels.ISocketHub) (serverBoard: ServerBoard) =
     task {
 
-        let sendOrNothing (socket: option<Guid>) =
+        let sendOrNothing (playerName, socket: option<Guid>) =
             task {
                 match socket with
                 | Some socket ->
                     let p1 =
-                        covertServerBoardIntoClientBoardByName serverBoard.serverPlayer1.serverPlayerName serverBoard
+                        covertServerBoardIntoClientBoardByName playerName serverBoard
 
                     let payload1 = Encode.Auto.toString (0, p1)
                     do! hub.SendMessageToClient "/channel" socket ClientSinkApi.GetTopicName.GotGameBoard payload1
                 | _ -> return ()
             }
 
-        do! sendOrNothing serverBoard.serverPlayer1.serverPlayerSocketId
-        do! sendOrNothing serverBoard.serverPlayer2.serverPlayerSocketId
+        do! sendOrNothing (serverBoard.serverPlayer1.serverPlayerName, serverBoard.serverPlayer1.serverPlayerSocketId)
+        do! sendOrNothing (serverBoard.serverPlayer2.serverPlayerName, serverBoard.serverPlayer2.serverPlayerSocketId)
     }

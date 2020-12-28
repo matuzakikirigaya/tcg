@@ -24,13 +24,6 @@ let sendClientBoard2 (hub: Channels.ISocketHub) (serverBoard: ServerBoard) =
                 | _ -> return ()
             }
 
-        let s1 =
-            serverBoard.serverPlayer1.serverPlayerSocketId
-
-        do! sendOrNothing s1
-
-        let s2 =
-            serverBoard.serverPlayer1.serverPlayerSocketId
-
-        do! sendOrNothing s2
+        do! sendOrNothing serverBoard.serverPlayer1.serverPlayerSocketId
+        do! sendOrNothing serverBoard.serverPlayer2.serverPlayerSocketId
     }
